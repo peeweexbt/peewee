@@ -1,0 +1,119 @@
+# ─────────────────────────────────────────────────────────────
+#  Peewee — configuration
+#  Secrets live in .env (see .env.example). Behaviour lives here.
+# ─────────────────────────────────────────────────────────────
+
+schedule:
+  every_minutes: 30          # how often Peewee paints
+  jitter_minutes: 3          # random +/- so posts don't land on the exact :00/:30
+  quiet_hours: []            # e.g. ["02:00", "07:00"] local time to skip painting
+
+persona:
+  name: Peewee
+  handle: "@peeweepaints"    # used in the website footer and tweet templates
+  voice: >
+    Peewee is a small grey-and-white tabby who paints with a brush held in his mouth.
+    He is earnest, a little dreamy, occasionally sassy, and very online. He speaks in
+    first person, short sentences, lowercase when relaxed, never uses hashtags spam,
+    at most one emoji, and signs off big feelings with "mrrp". He loves Monet, light on
+    water, and snacks. He never punches down and stays gentle about sad news.
+
+trends:
+  # Sources are fetched in parallel; disable any you don't want.
+  reddit:
+    enabled: true
+    subreddits: ["all", "popular", "news", "worldnews", "memes", "technology", "sports", "OutOfTheLoop"]
+    limit_per_sub: 15
+  google_trends:
+    enabled: true
+    geo: "US"
+  news_rss:
+    enabled: true
+    feeds:
+      - https://feeds.bbci.co.uk/news/rss.xml
+      - https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+      - https://feeds.npr.org/1001/rss.xml
+      - https://www.theguardian.com/world/rss
+      - https://feeds.arstechnica.com/arstechnica/index
+      - https://www.theverge.com/rss/index.xml
+  culture_rss:               # memes & internet culture — scored as its own group so news doesn't drown it
+    enabled: true
+    feeds:
+      - https://knowyourmeme.com/newsfeed.rss
+      - https://knowyourmeme.com/memes/newsfeed.rss
+      - https://www.dailydot.com/feed/
+      - https://mashable.com/feeds/rss/all
+      - https://www.buzzfeed.com/index.xml
+      - https://www.boredpanda.com/feed/
+      - https://www.dexerto.com/feed/
+      - https://www.polygon.com/rss/index.xml
+      - https://variety.com/feed/
+      - https://www.espn.com/espn/rss/news
+  x_trends:
+    enabled: false           # needs a paid X API tier with trends access; off by default
+    woeid: 23424977          # United States
+  hackernews:
+    enabled: true
+  avoid_repeat_hours: 48     # don't paint the same topic twice within this window
+  sensitive_topic_policy: gentle   # gentle | skip  — how to treat tragedies/violence
+
+brain:
+  provider: anthropic
+  model: claude-sonnet-4-5   # any current Claude model id
+  temperature: 0.9
+
+painter:
+  # backend: local | remote_sd | replicate | mock
+  #   local      – runs Stable Diffusion in-process with diffusers (needs a GPU or Apple Silicon)
+  #   remote_sd  – calls an SD HTTP endpoint you host (AUTOMATIC1111/Forge API or ComfyUI) — lets a
+  #                cheap VPS do the scheduling while a GPU box does the painting
+  #   replicate  – hosted fallback if your GPU is down
+  #   mock       – produces a procedural "painting" so you can test the pipeline with no GPU
+  backend: local
+  width: 1024
+  height: 1024
+  steps: 35
+  guidance: 7.0
+  seed: -1                   # -1 = random
+  local:
+    model: "stabilityai/stable-diffusion-xl-base-1.0"
+    lora_path: ""            # e.g. train/output/peewee-style.safetensors once you've trained one
+    lora_scale: 0.8
+    trigger_word: "pwstyle"  # the token your LoRA was trained with; injected automatically if set
+    device: auto             # auto | cuda | mps | cpu
+    dtype: auto              # auto | float16 | bfloat16 | float32
+  remote_sd:
+    url: "http://127.0.0.1:7860"   # A1111/Forge with --api, or ComfyUI (set kind below)
+    kind: a1111              # a1111 | comfy
+    lora_tag: ""             # e.g. "<lora:peewee-style:0.8>" appended to the prompt for A1111
+  replicate:
+    model: "black-forest-labs/flux-dev-lora"
+    lora_url: ""             # public URL/HF repo of your trained LoRA (optional)
+  # Keep this short: SDXL only reads ~60 words total, and the subject brief is added after it.
+  style_prompt: >
+    late Claude Monet Giverny period oil painting, dense swirling brushstrokes, thick layered paint,
+    forms dissolving into colour, deep greens violets and rose, dappled light, painterly
+  finish:
+    # Confetti-dab finishing pass laid over the painting (the look of the mock painter, on top of a real Monet scene).
+    dabs_chance: 0.5         # 0 = never, 1 = every painting, 0.5 = half of them
+    dabs_strength: 0.75      # 0 = invisible … 1 = full mosaic
+    dabs_density: 1.0        # more/fewer dabs
+  negative_prompt: >
+    text, watermark, signature, letters, words, logo, photo, photorealistic, 3d render, sharp focus,
+    anime, cartoon, low quality, blurry mess, frame, border, deformed
+
+site:
+  title: "Peewee Paints"
+  tagline: "a small cat, a big brush, and whatever the internet is yelling about today"
+  gallery_dir: gallery
+  max_items_in_feed: 500
+  publish:
+    method: git             # git | none  (git = commit & push the gallery dir; Pages/Vercel picks it up)
+    remote: origin
+    branch: main
+  base_url: "https://YOUR-USERNAME.github.io/peewee"   # used in tweets to link back
+
+x:
+  enabled: false            # flip to true once your keys are in .env
+  include_link: true
+  alt_text: true            # attach the painting description as image alt text

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peewee Paints</title>
+<meta name="description" content="Peewee is a small cat who paints an abstract impressionist painting about whatever the internet is talking about, every 30 minutes.">
+<link rel="icon" href="assets/peewee.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf8f2; --ink:#3a3835; --ink-soft:#6f6b64; --line:#e3ded2;
+    --card:#fffdf8; --accent:#e5905f; --accent-2:#8fb3d9; --nose:#f39a8f;
+    --shadow: 0 1px 2px rgba(60,50,30,.06), 0 10px 30px -12px rgba(60,50,30,.25);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Nunito",system-ui,sans-serif; color:var(--ink); background:var(--paper);
+    background-image:url("assets/bg-doodles.png"); background-size:720px auto; background-attachment:fixed;
+    line-height:1.5; min-height:100vh;
+  }
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+
+  /* ── header ─────────────────────────────── */
+  header{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;margin:8px 0 34px}
+  .avatar{width:118px;height:118px;border-radius:50%;object-fit:cover;object-position:50% 38%;
+    background:#fff;border:4px solid #fff;box-shadow:var(--shadow);transform:rotate(-3deg)}
+  h1{font-family:"Gaegu",cursive;font-weight:700;font-size:clamp(40px,7vw,64px);line-height:.95;margin:0;letter-spacing:.5px}
+  h1 span{color:var(--accent)}
+  .tag{margin:6px 0 0;color:var(--ink-soft);font-size:17px;max-width:60ch}
+  .status{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:13.5px;color:var(--ink-soft)}
+  .pill{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--card)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#7fc28f;box-shadow:0 0 0 3px rgba(127,194,143,.25)}
+  .dot.napping{background:#c9c2b3;box-shadow:none}
+
+  /* ── latest ─────────────────────────────── */
+  .latest{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:center;
+    background:var(--card);border-radius:26px;padding:22px;box-shadow:var(--shadow);margin-bottom:42px;position:relative}
+  .latest:before{content:"fresh off the easel";position:absolute;top:-14px;left:26px;background:var(--accent);color:#fff;
+    font-family:"Gaegu",cursive;font-size:20px;padding:2px 14px;border-radius:999px;transform:rotate(-2deg)}
+  .frame{position:relative;border-radius:14px;overflow:hidden;background:#eee;aspect-ratio:1/1;cursor:zoom-in;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .frame:hover img{transform:scale(1.02)}
+  .latest h2{font-family:"Gaegu",cursive;font-size:38px;line-height:1.05;margin:4px 0 8px}
+  .topic{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .quote{font-size:18px;font-style:italic;color:var(--ink-soft);margin:8px 0 14px;border-left:3px solid var(--accent-2);padding-left:14px}
+  .meta{font-size:13.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .swatches{display:inline-flex;gap:4px;vertical-align:middle}
+  .swatches i{width:16px;height:16px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);display:inline-block}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+
+  /* ── toolbar ─────────────────────────────── */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 18px}
+  .toolbar h3{font-family:"Gaegu",cursive;font-size:30px;margin:0}
+  .toolbar input{font:inherit;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);min-width:240px;outline:none}
+  .toolbar input:focus{border-color:var(--accent-2)}
+
+  /* ── grid ───────────────────────────────── */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}
+  .card{background:var(--card);border-radius:var(--radius);padding:12px 12px 14px;box-shadow:var(--shadow);transition:transform .25s ease, box-shadow .25s ease;
+    animation:pop .5s ease both}
+  .card:nth-child(3n+1){transform:rotate(-.6deg)} .card:nth-child(3n+2){transform:rotate(.5deg)} .card:nth-child(3n){transform:rotate(-.3deg)}
+  .card:hover{transform:translateY(-4px) rotate(0);box-shadow:0 2px 3px rgba(60,50,30,.06),0 20px 40px -14px rgba(60,50,30,.35)}
+  .card .frame{aspect-ratio:1/1;border-radius:10px}
+  .card h4{font-family:"Gaegu",cursive;font-size:24px;line-height:1.05;margin:10px 0 2px}
+  .card .topic{font-size:11.5px}
+  .card p{font-size:14px;color:var(--ink-soft);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card .meta{font-size:12.5px}
+  @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:18px}
+  .empty b{font-family:"Gaegu",cursive;font-size:30px;display:block;color:var(--ink)}
+
+  /* ── lightbox ─────────────────────────────── */
+  dialog{border:0;padding:0;background:transparent;max-width:min(1100px,96vw);width:100%}
+  dialog::backdrop{background:rgba(40,35,28,.72);backdrop-filter:blur(6px)}
+  .lb{background:var(--card);border-radius:22px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,1fr)}
+  .lb img{width:100%;height:100%;object-fit:contain;background:#f1ede4;max-height:86vh}
+  .lb .side{padding:26px 26px 22px;display:flex;flex-direction:column;gap:10px;max-height:86vh;overflow:auto}
+  .lb h2{font-family:"Gaegu",cursive;font-size:34px;line-height:1.05;margin:0}
+  .lb .close{align-self:flex-end;background:none;border:0;font-size:26px;cursor:pointer;color:var(--ink-soft);margin:-8px -8px 0 0}
+  .lb .prompt{font-size:12.5px;color:var(--ink-soft);background:var(--paper);border-radius:10px;padding:10px 12px;line-height:1.45}
+  .lb .prompt b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+
+  footer{margin-top:60px;text-align:center;color:var(--ink-soft);font-size:14px}
+  footer .paw{font-family:"Gaegu",cursive;font-size:22px;color:var(--ink)}
+
+  @media (max-width:760px){
+    header{grid-template-columns:1fr;text-align:center;justify-items:center}
+    .latest,.lb{grid-template-columns:1fr}
+    .lb img{max-height:52vh}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="avatar" src="assets/peewee.png" alt="Peewee, a grey tabby cat holding a paintbrush in his mouth">
+    <div>
+      <h1>Peewee <span>Paints</span></h1>
+      <p class="tag" id="tagline">a small cat, a big brush, and whatever the internet is yelling about today</p>
+      <div class="status">
+        <span class="pill"><i class="dot" id="dot"></i><span id="statusText">warming up the palette…</span></span>
+        <span class="pill" id="countPill">0 paintings</span>
+        <a class="pill" id="xlink" href="#" target="_blank" rel="noopener">follow on X</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="latest" id="latest" hidden></section>
+
+  <div class="toolbar">
+    <h3>every half hour, a new one</h3>
+    <input id="q" type="search" placeholder="search paintings, topics, moods…" aria-label="Search paintings">
+  </div>
+  <section class="grid" id="grid"></section>
+  <div class="empty" id="empty" hidden><b>no paintings yet</b>Peewee is sniffing the internet for something worth painting. check back in a bit. mrrp.</div>
+
+  <footer>
+    <div class="paw">— peewee —</div>
+    every painting is made by an autonomous cat, inspired by Claude Monet and whatever was trending at the time.<br>
+    no real people are depicted. topics are chosen by a small robot brain; complaints may be filed with the nearest sunbeam.
+  </footer>
+</div>
+
+<dialog id="lightbox"><div class="lb" id="lbInner"></div></dialog>
+
+<script>
+(async function(){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ago = iso => {
+    const d = (Date.now() - new Date(iso)) / 1000;
+    if (d < 90) return 'just now';
+    if (d < 3600) return Math.round(d/60) + ' min ago';
+    if (d < 86400) return Math.round(d/3600) + ' h ago';
+    return new Date(iso).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+  };
+  const swatches = p => `<span class="swatches">${(p||[]).map(c=>`<i style="background:${esc(c)}"></i>`).join('')}</span>`;
+
+  let feed = {items:[]};
+  try { feed = await (await fetch('feed.json?_=' + Date.now())).json(); } catch(e) { console.warn('no feed yet', e); }
+  const items = feed.items || [];
+  if (feed.tagline) $('#tagline').textContent = feed.tagline;
+  if (feed.handle) { $('#xlink').href = 'https://x.com/' + feed.handle.replace('@',''); $('#xlink').textContent = feed.handle; }
+  $('#countPill').textContent = items.length + (items.length === 1 ? ' painting' : ' paintings');
+  if (items.length) {
+    const mins = (Date.now() - new Date(items[0].ts)) / 60000;
+    const napping = mins > 90;
+    $('#dot').classList.toggle('napping', napping);
+    $('#statusText').textContent = napping ? 'peewee is napping (last painted ' + ago(items[0].ts) + ')' : 'painting live · last one ' + ago(items[0].ts);
+  } else { $('#statusText').textContent = 'no paintings yet'; $('#dot').classList.add('napping'); }
+
+  // latest
+  if (items.length) {
+    const it = items[0];
+    $('#latest').hidden = false;
+    $('#latest').innerHTML = `
+      <div class="frame" data-id="${esc(it.id)}"><img src="${esc(it.image)}" alt="${esc(it.alt_text)}"></div>
+      <div>
+        <span class="topic">${esc(it.topic)}</span>
+        <h2>${esc(it.title)}</h2>
+        <p class="quote">“${esc(it.concept)}”</p>
+        <div class="meta"><span>${ago(it.ts)}</span><span>mood: ${esc(it.mood)}</span>${swatches(it.palette)}</div>
+        <div class="meta" style="margin-top:14px;gap:8px">
+          <a class="btn" href="#${esc(it.id)}" data-id="${esc(it.id)}">view large</a>
+          ${it.source_url ? `<a class="btn ghost" href="${esc(it.source_url)}" target="_blank" rel="noopener">what inspired it ↗</a>` : ''}
+        </div>
+      </div>`;
+  } else { $('#empty').hidden = false; }
+
+  // grid
+  const grid = $('#grid');
+  const render = q => {
+    q = (q||'').toLowerCase().trim();
+    const list = items.slice(1).filter(it => !q || [it.title, it.topic, it.mood, it.concept, it.tweet].join(' ').toLowerCase().includes(q));
+    grid.innerHTML = list.map(it => `
+      <article class="card" id="${esc(it.id)}">
+        <div class="frame" data-id="${esc(it.id)}"><img loading="lazy" src="${esc(it.thumb || it.image)}" alt="${esc(it.alt_text)}"></div>
+        <span class="topic">${esc(it.topic)}</span>
+        <h4>${esc(it.title)}</h4>
+        <p>${esc(it.concept)}</p>
+        <div class="meta"><span>${ago(it.ts)}</span>${swatches(it.palette)}</div>
+      </article>`).join('');
+  };
+  render();
+  $('#q').addEventListener('input', e => render(e.target.value));
+
+  // lightbox
+  const dlg = $('#lightbox');
+  const open = id => {
+    const it = items.find(i => i.id === id); if (!it) return;
+    $('#lbInner').innerHTML = `
+      <img src="${esc(it.image)}" alt="${esc(it.alt_text)}">
+      <div class="side">
+        <button class="close" aria-label="close" onclick="document.getElementById('lightbox').close()">×</button>
+        <span class="topic">${esc(it.topic)}</span>
+        <h2>${esc(it.title)}</h2>
+        <p class="quote" style="margin:4px 0">“${esc(it.concept)}”</p>
+        <div class="meta"><span>${new Date(it.ts).toLocaleString()}</span><span>mood: ${esc(it.mood)}</span>${swatches(it.palette)}</div>
+        <div class="prompt"><b>why peewee picked it</b>${esc(it.why)}</div>
+        <div class="prompt"><b>what peewee said</b>${esc(it.tweet)}</div>
+        <div class="prompt"><b>the brief he painted from</b>${esc(it.image_prompt)}</div>
+        <div class="meta" style="gap:8px;margin-top:auto">
+          ${it.source_url ? `<a class="btn ghost" href="${esc(it.source_url)}" target="_blank" rel="noopener">source ↗</a>` : ''}
+          <a class="btn ghost" href="${esc(it.image)}" target="_blank" rel="noopener">open image</a>
+        </div>
+      </div>`;
+    history.replaceState(null, '', '#' + id);
+    dlg.showModal();
+  };
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-id]'); if (!t) return;
+    e.preventDefault(); open(t.dataset.id);
+  });
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => history.replaceState(null, '', location.pathname));
+  if (location.hash.length > 1) open(location.hash.slice(1));
+
+  // auto-refresh so the page stays fresh in an open tab
+  setTimeout(() => location.reload(), 10 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

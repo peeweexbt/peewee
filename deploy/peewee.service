@@ -1,0 +1,16 @@
+# systemd unit for a GPU box (Ubuntu). Copy to /etc/systemd/system/peewee.service
+# sudo systemctl enable --now peewee && journalctl -fu peewee
+[Unit]
+Description=Peewee the painting cat
+After=network-online.target
+
+[Service]
+User=peewee
+WorkingDirectory=/opt/peewee
+EnvironmentFile=/opt/peewee/.env
+ExecStart=/opt/peewee/.venv/bin/python -m peewee.main loop
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

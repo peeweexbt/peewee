@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS launchd job: run Peewee on your Mac (Apple Silicon can paint with the local backend).
+     cp deploy/com.peewee.paints.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.peewee.paints.plist
+     Edit the two /Users/YOU paths first. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.peewee.paints</string>
+  <key>ProgramArguments</key><array>
+    <string>/Users/YOU/peewee/.venv/bin/python</string><string>-m</string><string>peewee.main</string><string>loop</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Users/YOU/peewee</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/tmp/peewee.log</string>
+  <key>StandardErrorPath</key><string>/tmp/peewee.err</string>
+</dict></plist>

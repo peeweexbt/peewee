@@ -1,0 +1,18 @@
+# Publishes the gallery/ folder to GitHub Pages every time the bot pushes a new painting.
+name: Deploy gallery
+on:
+  push:
+    branches: [main]
+    paths: ["gallery/**"]
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: ${{ steps.d.outputs.page_url }} }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: gallery }
+      - id: d
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,9 @@
+# Slim install for a CPU-only scheduler box (no torch/diffusers). Use with painter.backend: remote_sd or replicate.
+anthropic>=0.40
+pyyaml
+python-dotenv
+requests
+feedparser
+pillow
+tweepy>=4.14
+replicate

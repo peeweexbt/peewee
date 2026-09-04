@@ -1,0 +1,11 @@
+torch
+torchvision
+diffusers>=0.30
+transformers
+accelerate
+peft
+bitsandbytes   # for --use_8bit_adam (NVIDIA only; remove the flag in train_lora.sh otherwise)
+datasets
+safetensors
+pillow
+pillow-heif    # lets prepare_dataset.py read iPhone .heic files

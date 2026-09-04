@@ -1,0 +1,16 @@
+app = "peewee-paints"
+primary_region = "ewr"
+
+[build]
+  dockerfile = "deploy/Dockerfile"
+
+[env]
+  PEEWEE_PAINTER = "remote_sd"
+
+# Peewee is a background worker, not a web app: no [http_service]. One machine, always on.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[processes]
+  worker = "python -m peewee.main loop"

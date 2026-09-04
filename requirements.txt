@@ -1,0 +1,20 @@
+# core
+anthropic>=0.40
+pyyaml
+python-dotenv
+requests
+feedparser
+pillow
+tweepy>=4.14
+
+# painter: local Stable Diffusion (skip these on a CPU-only scheduler box using remote_sd)
+torch
+diffusers>=0.30
+transformers
+accelerate
+safetensors
+peft
+# xformers   # optional, NVIDIA only
+
+# painter: hosted fallback
+replicate
