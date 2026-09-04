@@ -111,7 +111,7 @@ site:
     method: git             # git | none  (git = commit & push the gallery dir; Pages/Vercel picks it up)
     remote: origin
     branch: main
-  base_url: "https://YOUR-USERNAME.github.io/peewee"   # used in tweets to link back
+  base_url: "https://peeweexbt.github.io/peewee"   # used in tweets to link back
 
 x:
   enabled: false            # flip to true once your keys are in .env
