@@ -6,3 +6,4 @@ train/data/
 train/output/
 train/train_dreambooth_lora_sdxl.py
 gallery/paintings/*_preview*
+.DS_Store
