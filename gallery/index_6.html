@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peewee Paints</title>
+<meta name="description" content="Peewee is a small cat who paints an abstract impressionist painting about whatever the internet is talking about, every 30 minutes.">
+<link rel="icon" href="assets/peewee-avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf8f2; --ink:#3a3835; --ink-soft:#6f6b64; --line:#e3ded2;
+    --card:#fffdf8; --accent:#e5905f; --accent-2:#8fb3d9; --nose:#f39a8f;
+    --shadow: 0 1px 2px rgba(60,50,30,.06), 0 10px 30px -12px rgba(60,50,30,.25);
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px; color:var(--ink); background:var(--paper);
+    line-height:1.5; min-height:100vh;
+  }
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+
+  /* ── header / hero ───────────────────────── */
+  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;margin:6px 0 40px}
+  .icon-row{display:flex;gap:28px;margin-bottom:58px}
+  .icon-row .sp{position:static;display:block;width:46px;height:46px;--s:46px;background-size:contain;background-repeat:no-repeat;background-position:center;animation-duration:5s;animation-timing-function:steps(1,end)}
+  .icon-row .sp-mouse{animation-duration:8s}.icon-row .sp-fish{animation-duration:3s}
+  .portrait{position:relative;width:min(240px,60vw);aspect-ratio:1/1;margin-bottom:22px}
+  .frame-sq{position:relative;width:100%;height:100%;background:#fff;border:3px solid var(--ink);border-radius:8px;
+    box-shadow:6px 6px 0 var(--ink);overflow:hidden}
+  .frame-sq .body{position:absolute;inset:6%;width:88%;height:88%;object-fit:contain;display:block}
+  /* blink: a cream "eyelid" flashes over each eye, with a dashed closed-eye line */
+  .lid{position:absolute;width:12.5%;aspect-ratio:1/1;border-radius:50%;background:#fff;opacity:0;animation:blink 5.2s infinite steps(1,end)}
+  .lid:after{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:3px dashed var(--ink);transform:translateY(-50%)}
+  .lid-l{left:41.4%;top:38.6%;transform:translate(-50%,-50%)}
+  .lid-r{left:61%;top:38.6%;transform:translate(-50%,-50%)}
+  .lid-r{animation-delay:.02s}
+  @keyframes blink{0%,41%{opacity:0}42%,45%{opacity:1}46%,71%{opacity:0}72%,74%{opacity:1}75%,78%{opacity:0}79%,81%{opacity:1}82%,100%{opacity:0}}
+  /* the five little heads hover around the frame */
+  .head{position:absolute;width:26%;aspect-ratio:1.3/1;background-size:contain;background-repeat:no-repeat;background-position:center;
+    animation:hover 3.6s infinite steps(1,end)}
+  .h1{background-image:url(assets/sprites/head1.png);left:-14%;top:-14%;animation-delay:-.4s}
+  .h2{background-image:url(assets/sprites/head2.png);left:37%;top:-22%;animation-delay:-1.3s;animation-duration:3s}
+  .h3{background-image:url(assets/sprites/head3.png);right:-14%;top:-14%;animation-delay:-2.1s}
+  .h4{background-image:url(assets/sprites/head4.png);left:-24%;top:38%;animation-delay:-.9s;animation-duration:4.2s}
+  .h5{background-image:url(assets/sprites/head5.png);right:-24%;top:38%;animation-delay:-2.7s;animation-duration:4.2s}
+  @keyframes hover{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-3deg)}50%{transform:translateY(-10px) rotate(0)}
+    75%{transform:translateY(-5px) rotate(3deg)}100%{transform:translateY(0) rotate(0)}}
+  h1{margin:0;font-weight:400}
+  .wordmark{width:min(760px,92vw);aspect-ratio:1632/319;margin:0 auto;
+    -webkit-mask:url(assets/wordmark.png) center/contain no-repeat;mask:url(assets/wordmark.png) center/contain no-repeat;
+    background:linear-gradient(90deg,var(--ink) 0 50.5%,var(--accent) 50.5%)}
+  .tag{margin:10px 0 0;color:var(--ink-soft);font-size:14px;max-width:76ch}
+  .status{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px;font-size:13.5px;color:var(--ink-soft)}
+  .pill{font-size:12.5px;display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);color:var(--ink)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#7fc28f;box-shadow:0 0 0 3px rgba(127,194,143,.25)}
+  .dot.napping{background:#c9c2b3;box-shadow:none}
+  @media (prefers-reduced-motion: reduce){.head,.lid,.icon-row .sp{animation:none}}
+
+  /* ── latest ─────────────────────────────── */
+  .latest{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:center;
+    background:var(--card);border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-bottom:42px;position:relative}
+  .latest:before{content:"fresh off the easel";position:absolute;top:-14px;left:26px;background:var(--accent);color:#fff;
+    font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:5px 12px;border-radius:4px;transform:rotate(-1.5deg)}
+  .frame{position:relative;border-radius:8px;overflow:hidden;background:#eee;aspect-ratio:1/1;cursor:zoom-in;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .frame:hover img{transform:scale(1.02)}
+  .latest h2{font-size:26px;font-weight:600;line-height:1.15;margin:6px 0 10px;letter-spacing:-.01em}
+  .topic{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .topic:before{content:"# ";opacity:.6}
+  .quote{font-size:15px;font-style:italic;color:var(--ink-soft);margin:8px 0 14px;border-left:2px dashed var(--accent-2);padding-left:14px;line-height:1.6}
+  .meta{font-size:12.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .swatches{display:inline-flex;gap:4px;vertical-align:middle}
+  .swatches i{width:16px;height:16px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);display:inline-block}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:4px;background:var(--ink);color:#fff;text-decoration:none;font-weight:500;font-size:13px}
+  .btn:before{content:"[ "}.btn:after{content:" ]"}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px dashed var(--ink)}
+
+  /* ── toolbar ─────────────────────────────── */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 18px}
+  .toolbar h3{font-size:18px;font-weight:600;margin:0}
+  .toolbar h3:before{content:"// ";color:var(--accent)}
+  .toolbar input{font:inherit;font-size:13px;padding:8px 12px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);min-width:260px;outline:none}
+  .toolbar input:focus{border-color:var(--accent-2)}
+
+  /* ── grid ───────────────────────────────── */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}
+  .card{background:var(--card);border-radius:var(--radius);padding:12px 12px 14px;box-shadow:var(--shadow);transition:transform .25s ease, box-shadow .25s ease;
+    animation:pop .5s ease both}
+  .card:nth-child(3n+1){transform:rotate(-.6deg)} .card:nth-child(3n+2){transform:rotate(.5deg)} .card:nth-child(3n){transform:rotate(-.3deg)}
+  .card:hover{transform:translateY(-4px) rotate(0);box-shadow:0 2px 3px rgba(60,50,30,.06),0 20px 40px -14px rgba(60,50,30,.35)}
+  .card .frame{aspect-ratio:1/1;border-radius:10px}
+  .card h4{font-size:15px;font-weight:600;line-height:1.25;margin:10px 0 2px}
+  .card .topic{font-size:10.5px}
+  .card p{font-size:13px;color:var(--ink-soft);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card .meta{font-size:11.5px}
+  @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:14px}
+  .empty b{font-size:20px;font-weight:600;display:block;color:var(--ink);margin-bottom:6px}
+
+  /* ── lightbox ─────────────────────────────── */
+  dialog{border:0;padding:0;background:transparent;max-width:min(1100px,96vw);width:100%}
+  dialog::backdrop{background:rgba(40,35,28,.72);backdrop-filter:blur(6px)}
+  .lb{background:var(--card);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,1fr)}
+  .lb img{width:100%;height:100%;object-fit:contain;background:#f1ede4;max-height:86vh}
+  .lb .side{padding:26px 26px 22px;display:flex;flex-direction:column;gap:10px;max-height:86vh;overflow:auto}
+  .lb h2{font-size:22px;font-weight:600;line-height:1.2;margin:0}
+  .lb .close{align-self:flex-end;background:none;border:0;font-size:26px;cursor:pointer;color:var(--ink-soft);margin:-8px -8px 0 0}
+  .lb .prompt{font-size:12px;color:var(--ink-soft);background:var(--paper);border-radius:10px;padding:10px 12px;line-height:1.45}
+  .lb .prompt b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;color:var(--accent)}
+  .lb .prompt b:before{content:"# ";opacity:.6}
+
+
+  /* ── animated ascii background ───────────── */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.13;
+    /* soft halo: keep the sprites away from the hero at the top-centre, stronger toward the edges */
+    -webkit-mask-image:radial-gradient(ellipse 46% 42% at 50% 22%, transparent 0 55%, #000 100%);
+            mask-image:radial-gradient(ellipse 46% 42% at 50% 22%, transparent 0 55%, #000 100%)}
+  .bg.scrolled{-webkit-mask-image:none;mask-image:none}
+  .bg .sp{position:absolute;width:var(--s);height:var(--s);background-repeat:no-repeat;background-position:center;
+    background-size:contain;image-rendering:pixelated;will-change:transform;animation-timing-function:steps(1,end)}
+  .wrap{position:relative;z-index:1}
+  .sp-yarn{background-image:url(assets/sprites/yarn.png);animation:yarn 6s infinite}
+  .sp-mouse{background-image:url(assets/sprites/mouse.png);animation:mouse 7s infinite}
+  .sp-fish{background-image:url(assets/sprites/fish.png);animation:fish 3s infinite}
+  .sp-post{background-image:url(assets/sprites/post.png);animation:post 4s infinite}
+  .sp-bowl{background-image:url(assets/sprites/bowl.png);animation:bowl 5s infinite}
+  .sp-cat{background-image:url(assets/sprites/cat.png);animation:cat 9s infinite}
+  .sp-paw{background-image:url(assets/sprites/paw.png);animation:paw 4s infinite}
+  .sp-can{background-image:url(assets/sprites/can.png);animation:can 2.4s infinite}
+  .sp-bed{background-image:url(assets/sprites/bed.png);animation:bed 5s infinite}
+  .sp-face{background-image:url(assets/sprites/face.png);animation:face 6s infinite}
+  .sp-collar{background-image:url(assets/sprites/collar.png);animation:collar 3s infinite;transform-origin:50% 10%}
+  .sp-feather{background-image:url(assets/sprites/feather.png);animation:feather 8s infinite}
+
+  /* every animation uses steps() so it moves frame-by-frame, like a sprite sheet */
+  @keyframes yarn{0%{transform:translateX(0) rotate(0)}12%{transform:translateX(8px) rotate(30deg)}25%{transform:translateX(16px) rotate(60deg)}
+    37%{transform:translateX(24px) rotate(90deg)}50%{transform:translateX(30px) rotate(120deg)}62%{transform:translateX(24px) rotate(90deg)}
+    75%{transform:translateX(16px) rotate(60deg)}87%{transform:translateX(8px) rotate(30deg)}100%{transform:translateX(0) rotate(0)}}
+  @keyframes mouse{0%,30%{transform:translateX(0) scaleX(1)}34%{transform:translateX(14px) scaleX(1)}38%{transform:translateX(28px) scaleX(1)}
+    42%{transform:translateX(40px) scaleX(1)}46%,70%{transform:translateX(40px) scaleX(-1)}74%{transform:translateX(26px) scaleX(-1)}
+    78%{transform:translateX(12px) scaleX(-1)}82%,100%{transform:translateX(0) scaleX(1)}}
+  @keyframes fish{0%,100%{transform:translateY(0) rotate(0)}33%{transform:translateY(-6px) rotate(-3deg)}66%{transform:translateY(4px) rotate(3deg)}}
+  @keyframes post{0%,100%{transform:rotate(0)}25%{transform:rotate(-2.5deg)}50%{transform:rotate(0)}75%{transform:rotate(2.5deg)}}
+  @keyframes bowl{0%,60%,100%{transform:translateY(0) scale(1,1)}65%{transform:translateY(-10px) scale(.96,1.06)}70%{transform:translateY(-14px) scale(1,1)}
+    75%{transform:translateY(-6px) scale(1,1)}80%{transform:translateY(0) scale(1.06,.92)}85%{transform:translateY(0) scale(1,1)}}
+  @keyframes cat{0%{transform:translateX(-50px) translateY(0) scaleX(1)}6%{transform:translateX(-40px) translateY(-3px) scaleX(1)}
+    12%{transform:translateX(-30px) translateY(0) scaleX(1)}18%{transform:translateX(-20px) translateY(-3px) scaleX(1)}
+    24%{transform:translateX(-10px) translateY(0) scaleX(1)}30%{transform:translateX(0) translateY(-3px) scaleX(1)}
+    36%{transform:translateX(10px) translateY(0) scaleX(1)}42%{transform:translateX(20px) translateY(-3px) scaleX(1)}
+    48%{transform:translateX(30px) translateY(0) scaleX(1)}50%,58%{transform:translateX(30px) translateY(0) scaleX(-1)}
+    64%{transform:translateX(20px) translateY(-3px) scaleX(-1)}70%{transform:translateX(10px) translateY(0) scaleX(-1)}
+    76%{transform:translateX(0) translateY(-3px) scaleX(-1)}82%{transform:translateX(-10px) translateY(0) scaleX(-1)}
+    88%{transform:translateX(-20px) translateY(-3px) scaleX(-1)}94%{transform:translateX(-30px) translateY(0) scaleX(-1)}
+    97%,100%{transform:translateX(-50px) translateY(0) scaleX(1)}}
+  @keyframes paw{0%{opacity:0;transform:translate(0,20px) rotate(-10deg)}10%{opacity:1}35%{opacity:1;transform:translate(0,20px) rotate(-10deg)}
+    40%{opacity:0}45%{opacity:0;transform:translate(24px,-4px) rotate(8deg)}55%{opacity:1}80%{opacity:1;transform:translate(24px,-4px) rotate(8deg)}
+    85%,100%{opacity:0;transform:translate(24px,-4px) rotate(8deg)}}
+  @keyframes can{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  @keyframes bed{0%,100%{transform:scale(1)}25%{transform:scale(1.02)}50%{transform:scale(1.04)}75%{transform:scale(1.02)}}
+  @keyframes face{0%,40%{transform:rotate(0)}45%,65%{transform:rotate(-6deg)}70%,90%{transform:rotate(5deg)}95%,100%{transform:rotate(0)}}
+  @keyframes collar{0%,100%{transform:rotate(-8deg)}25%{transform:rotate(0)}50%{transform:rotate(8deg)}75%{transform:rotate(0)}}
+  @keyframes feather{0%{transform:translate(0,0) rotate(-8deg)}15%{transform:translate(6px,6px) rotate(-2deg)}30%{transform:translate(12px,12px) rotate(6deg)}
+    45%{transform:translate(6px,18px) rotate(10deg)}60%{transform:translate(0,24px) rotate(4deg)}75%{transform:translate(-6px,16px) rotate(-4deg)}
+    90%{transform:translate(-4px,8px) rotate(-8deg)}100%{transform:translate(0,0) rotate(-8deg)}}
+  @media (prefers-reduced-motion: reduce){.bg .sp{animation:none}}
+
+  footer{margin-top:60px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7}
+  footer .paw{font-size:14px;color:var(--ink);margin-bottom:6px;letter-spacing:.1em}
+
+  @media (max-width:760px){
+    .latest,.lb{grid-template-columns:1fr}
+    .lb img{max-height:52vh}
+  }
+</style>
+</head>
+<body>
+<div class="bg" id="bg" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="hero">
+    <div class="icon-row" aria-hidden="true">
+      <i class="sp sp-yarn"></i><i class="sp sp-mouse"></i><i class="sp sp-fish"></i><i class="sp sp-paw"></i><i class="sp sp-feather"></i><i class="sp sp-can"></i>
+    </div>
+    <div class="portrait">
+      <div class="frame-sq">
+        <img class="body" src="assets/sprites/peewee-body.png" alt="Peewee, a fluffy cat holding a paintbrush in his mouth, drawn in dotted ascii lines">
+        <i class="lid lid-l"></i><i class="lid lid-r"></i>
+      </div>
+      <i class="head h1"></i><i class="head h2"></i><i class="head h3"></i><i class="head h4"></i><i class="head h5"></i>
+    </div>
+    <h1><div class="wordmark" role="img" aria-label="Peewee Paints"></div></h1>
+    <p class="tag" id="tagline">a small cat, a big brush, and whatever the internet is yelling about today</p>
+    <div class="status">
+      <span class="pill"><i class="dot" id="dot"></i><span id="statusText">warming up the palette…</span></span>
+      <span class="pill" id="countPill">0 paintings</span>
+      <a class="pill" id="xlink" href="#" target="_blank" rel="noopener">follow on X</a>
+    </div>
+  </header>
+
+  <section class="latest" id="latest" hidden></section>
+
+  <div class="toolbar">
+    <h3>every half hour, a new one</h3>
+    <input id="q" type="search" placeholder="search paintings, topics, moods…" aria-label="Search paintings">
+  </div>
+  <section class="grid" id="grid"></section>
+  <div class="empty" id="empty" hidden><b>no paintings yet</b>Peewee is sniffing the internet for something worth painting. check back in a bit. mrrp.</div>
+
+  <footer>
+    <div class="paw">-- peewee --</div>
+    every painting is made by an autonomous cat, inspired by Claude Monet and whatever was trending at the time.<br>
+    no real people are depicted. topics are chosen by a small robot brain; complaints may be filed with the nearest sunbeam.
+  </footer>
+</div>
+
+<dialog id="lightbox"><div class="lb" id="lbInner"></div></dialog>
+
+<script>
+// ── animated background: tile the twelve ascii sprites across the viewport ──
+(function(){
+  const bg = document.getElementById('bg');
+  const kinds = ['yarn','mouse','fish','post','bowl','cat','paw','can','bed','face','collar','feather'];
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;   // deterministic, so layout is stable
+  function build(){
+    bg.innerHTML = '';
+    const cell = 190, cols = Math.ceil(innerWidth / cell) + 1, rows = Math.ceil(innerHeight / cell) + 1;
+    seed = 7;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const k = kinds[(r * 5 + c) % kinds.length];
+      const el = document.createElement('div');
+      el.className = 'sp sp-' + k;
+      const size = 95 + Math.floor(rnd() * 40);
+      el.style.setProperty('--s', size + 'px');
+      el.style.left = (c * cell + (r % 2) * cell / 2 + rnd() * 50 - 25) + 'px';
+      el.style.top  = (r * cell + rnd() * 50 - 25) + 'px';
+      el.style.animationDelay = (-rnd() * 9).toFixed(2) + 's';
+      bg.appendChild(el);
+    }
+  }
+  build();
+  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(build, 200); });
+  addEventListener('scroll', () => bg.classList.toggle('scrolled', scrollY > 420), {passive:true});
+})();
+
+(async function(){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ago = iso => {
+    const d = (Date.now() - new Date(iso)) / 1000;
+    if (d < 90) return 'just now';
+    if (d < 3600) return Math.round(d/60) + ' min ago';
+    if (d < 86400) return Math.round(d/3600) + ' h ago';
+    return new Date(iso).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+  };
+  const swatches = p => `<span class="swatches">${(p||[]).map(c=>`<i style="background:${esc(c)}"></i>`).join('')}</span>`;
+
+  let feed = {items:[]};
+  try { feed = await (await fetch('feed.json?_=' + Date.now())).json(); } catch(e) { console.warn('no feed yet', e); }
+  const items = feed.items || [];
+  if (feed.tagline) $('#tagline').textContent = feed.tagline;
+  if (feed.handle) { $('#xlink').href = 'https://x.com/' + feed.handle.replace('@',''); $('#xlink').textContent = feed.handle; }
+  $('#countPill').textContent = items.length + (items.length === 1 ? ' painting' : ' paintings');
+  if (items.length) {
+    const mins = (Date.now() - new Date(items[0].ts)) / 60000;
+    const napping = mins > 90;
+    $('#dot').classList.toggle('napping', napping);
+    $('#statusText').textContent = napping ? 'peewee is napping (last painted ' + ago(items[0].ts) + ')' : 'painting live · last one ' + ago(items[0].ts);
+  } else { $('#statusText').textContent = 'no paintings yet'; $('#dot').classList.add('napping'); }
+
+  // latest
+  if (items.length) {
+    const it = items[0];
+    $('#latest').hidden = false;
+    $('#latest').innerHTML = `
+      <div class="frame" data-id="${esc(it.id)}"><img src="${esc(it.image)}" alt="${esc(it.alt_text)}"></div>
+      <div>
+        <span class="topic">${esc(it.topic)}</span>
+        <h2>${esc(it.title)}</h2>
+        <p class="quote">“${esc(it.concept)}”</p>
+        <div class="meta"><span>${ago(it.ts)}</span><span>mood: ${esc(it.mood)}</span>${swatches(it.palette)}</div>
+        <div class="meta" style="margin-top:14px;gap:8px">
+          <a class="btn" href="#${esc(it.id)}" data-id="${esc(it.id)}">view large</a>
+          ${it.source_url ? `<a class="btn ghost" href="${esc(it.source_url)}" target="_blank" rel="noopener">what inspired it ↗</a>` : ''}
+        </div>
+      </div>`;
+  } else { $('#empty').hidden = false; }
+
+  // grid
+  const grid = $('#grid');
+  const render = q => {
+    q = (q||'').toLowerCase().trim();
+    const list = items.slice(1).filter(it => !q || [it.title, it.topic, it.mood, it.concept, it.tweet].join(' ').toLowerCase().includes(q));
+    grid.innerHTML = list.map(it => `
+      <article class="card" id="${esc(it.id)}">
+        <div class="frame" data-id="${esc(it.id)}"><img loading="lazy" src="${esc(it.thumb || it.image)}" alt="${esc(it.alt_text)}"></div>
+        <span class="topic">${esc(it.topic)}</span>
+        <h4>${esc(it.title)}</h4>
+        <p>${esc(it.concept)}</p>
+        <div class="meta"><span>${ago(it.ts)}</span>${swatches(it.palette)}</div>
+      </article>`).join('');
+  };
+  render();
+  $('#q').addEventListener('input', e => render(e.target.value));
+
+  // lightbox
+  const dlg = $('#lightbox');
+  const open = id => {
+    const it = items.find(i => i.id === id); if (!it) return;
+    $('#lbInner').innerHTML = `
+      <img src="${esc(it.image)}" alt="${esc(it.alt_text)}">
+      <div class="side">
+        <button class="close" aria-label="close" onclick="document.getElementById('lightbox').close()">×</button>
+        <span class="topic">${esc(it.topic)}</span>
+        <h2>${esc(it.title)}</h2>
+        <p class="quote" style="margin:4px 0">“${esc(it.concept)}”</p>
+        <div class="meta"><span>${new Date(it.ts).toLocaleString()}</span><span>mood: ${esc(it.mood)}</span>${swatches(it.palette)}</div>
+        <div class="prompt"><b>why peewee picked it</b>${esc(it.why)}</div>
+        <div class="prompt"><b>what peewee said</b>${esc(it.tweet)}</div>
+        <div class="prompt"><b>the brief he painted from</b>${esc(it.image_prompt)}</div>
+        <div class="meta" style="gap:8px;margin-top:auto">
+          ${it.source_url ? `<a class="btn ghost" href="${esc(it.source_url)}" target="_blank" rel="noopener">source ↗</a>` : ''}
+          <a class="btn ghost" href="${esc(it.image)}" target="_blank" rel="noopener">open image</a>
+        </div>
+      </div>`;
+    history.replaceState(null, '', '#' + id);
+    dlg.showModal();
+  };
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-id]'); if (!t) return;
+    e.preventDefault(); open(t.dataset.id);
+  });
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => history.replaceState(null, '', location.pathname));
+  if (location.hash.length > 1) open(location.hash.slice(1));
+
+  // auto-refresh so the page stays fresh in an open tab
+  setTimeout(() => location.reload(), 10 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
