@@ -7,18 +7,18 @@
 <meta name="description" content="Peewee is a small cat who paints an abstract impressionist painting about whatever the internet is talking about, every 30 minutes.">
 <link rel="icon" href="assets/peewee-avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@700&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#faf8f2; --ink:#3a3835; --ink-soft:#6f6b64; --line:#e3ded2;
     --card:#fffdf8; --accent:#e5905f; --accent-2:#8fb3d9; --nose:#f39a8f;
     --shadow: 0 1px 2px rgba(60,50,30,.06), 0 10px 30px -12px rgba(60,50,30,.25);
-    --radius:18px;
+    --radius:10px;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
-    font-family:"Nunito",system-ui,sans-serif; color:var(--ink); background:var(--paper);
+    font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px; color:var(--ink); background:var(--paper);
     line-height:1.5; min-height:100vh;
   }
   a{color:inherit}
@@ -51,38 +51,41 @@
   @keyframes hover{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-3deg)}50%{transform:translateY(-10px) rotate(0)}
     75%{transform:translateY(-5px) rotate(3deg)}100%{transform:translateY(0) rotate(0)}}
   h1{margin:0;font-weight:400}
-  .ascii-title{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:clamp(5.4px,1.15vw,14px);
-    line-height:1.12;margin:0;color:var(--ink);white-space:pre;text-align:left;display:inline-block}
-  .ascii-title span{color:var(--accent)}
-  .tag{margin:8px 0 0;color:var(--ink-soft);font-size:17px;max-width:60ch}
+  .wordmark{width:min(760px,92vw);aspect-ratio:1632/319;margin:0 auto;
+    -webkit-mask:url(assets/wordmark.png) center/contain no-repeat;mask:url(assets/wordmark.png) center/contain no-repeat;
+    background:linear-gradient(90deg,var(--ink) 0 50.5%,var(--accent) 50.5%)}
+  .tag{margin:10px 0 0;color:var(--ink-soft);font-size:14px;max-width:76ch}
   .status{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px;font-size:13.5px;color:var(--ink-soft)}
-  .pill{font-family:"DotGothic16","VT323",monospace;font-size:14px;display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--card)}
+  .pill{font-size:12.5px;display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);color:var(--ink)}
   .dot{width:8px;height:8px;border-radius:50%;background:#7fc28f;box-shadow:0 0 0 3px rgba(127,194,143,.25)}
   .dot.napping{background:#c9c2b3;box-shadow:none}
   @media (prefers-reduced-motion: reduce){.head,.lid,.icon-row .sp{animation:none}}
 
   /* ── latest ─────────────────────────────── */
   .latest{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:center;
-    background:var(--card);border-radius:26px;padding:22px;box-shadow:var(--shadow);margin-bottom:42px;position:relative}
+    background:var(--card);border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-bottom:42px;position:relative}
   .latest:before{content:"fresh off the easel";position:absolute;top:-14px;left:26px;background:var(--accent);color:#fff;
-    font-family:"DotGothic16","VT323",monospace;font-size:17px;padding:4px 14px;border-radius:999px;transform:rotate(-2deg)}
-  .frame{position:relative;border-radius:14px;overflow:hidden;background:#eee;aspect-ratio:1/1;cursor:zoom-in;
+    font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:5px 12px;border-radius:4px;transform:rotate(-1.5deg)}
+  .frame{position:relative;border-radius:8px;overflow:hidden;background:#eee;aspect-ratio:1/1;cursor:zoom-in;
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
   .frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
   .frame:hover img{transform:scale(1.02)}
-  .latest h2{font-family:"DotGothic16","VT323",monospace;font-size:34px;line-height:1.05;margin:4px 0 8px}
-  .topic{font-family:"DotGothic16","VT323",monospace;display:inline-block;font-size:14px;font-weight:400;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
-  .quote{font-size:18px;font-style:italic;color:var(--ink-soft);margin:8px 0 14px;border-left:3px solid var(--accent-2);padding-left:14px}
-  .meta{font-size:13.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .latest h2{font-size:26px;font-weight:600;line-height:1.15;margin:6px 0 10px;letter-spacing:-.01em}
+  .topic{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .topic:before{content:"# ";opacity:.6}
+  .quote{font-size:15px;font-style:italic;color:var(--ink-soft);margin:8px 0 14px;border-left:2px dashed var(--accent-2);padding-left:14px;line-height:1.6}
+  .meta{font-size:12.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
   .swatches{display:inline-flex;gap:4px;vertical-align:middle}
   .swatches i{width:16px;height:16px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line);display:inline-block}
-  .btn{font-family:"DotGothic16","VT323",monospace;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:400;font-size:15px}
-  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:4px;background:var(--ink);color:#fff;text-decoration:none;font-weight:500;font-size:13px}
+  .btn:before{content:"[ "}.btn:after{content:" ]"}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px dashed var(--ink)}
 
   /* ── toolbar ─────────────────────────────── */
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 18px}
-  .toolbar h3{font-family:"DotGothic16","VT323",monospace;font-size:26px;margin:0}
-  .toolbar input{font:inherit;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);min-width:240px;outline:none}
+  .toolbar h3{font-size:18px;font-weight:600;margin:0}
+  .toolbar h3:before{content:"// ";color:var(--accent)}
+  .toolbar input{font:inherit;font-size:13px;padding:8px 12px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);min-width:260px;outline:none}
   .toolbar input:focus{border-color:var(--accent-2)}
 
   /* ── grid ───────────────────────────────── */
@@ -92,25 +95,26 @@
   .card:nth-child(3n+1){transform:rotate(-.6deg)} .card:nth-child(3n+2){transform:rotate(.5deg)} .card:nth-child(3n){transform:rotate(-.3deg)}
   .card:hover{transform:translateY(-4px) rotate(0);box-shadow:0 2px 3px rgba(60,50,30,.06),0 20px 40px -14px rgba(60,50,30,.35)}
   .card .frame{aspect-ratio:1/1;border-radius:10px}
-  .card h4{font-family:"DotGothic16","VT323",monospace;font-size:20px;line-height:1.05;margin:10px 0 2px}
-  .card .topic{font-size:11.5px}
-  .card p{font-size:14px;color:var(--ink-soft);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .card .meta{font-size:12.5px}
+  .card h4{font-size:15px;font-weight:600;line-height:1.25;margin:10px 0 2px}
+  .card .topic{font-size:10.5px}
+  .card p{font-size:13px;color:var(--ink-soft);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card .meta{font-size:11.5px}
   @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
 
-  .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:18px}
-  .empty b{font-family:"DotGothic16","VT323",monospace;font-size:26px;display:block;color:var(--ink)}
+  .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:14px}
+  .empty b{font-size:20px;font-weight:600;display:block;color:var(--ink);margin-bottom:6px}
 
   /* ── lightbox ─────────────────────────────── */
   dialog{border:0;padding:0;background:transparent;max-width:min(1100px,96vw);width:100%}
   dialog::backdrop{background:rgba(40,35,28,.72);backdrop-filter:blur(6px)}
-  .lb{background:var(--card);border-radius:22px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,1fr)}
+  .lb{background:var(--card);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,1fr)}
   .lb img{width:100%;height:100%;object-fit:contain;background:#f1ede4;max-height:86vh}
   .lb .side{padding:26px 26px 22px;display:flex;flex-direction:column;gap:10px;max-height:86vh;overflow:auto}
-  .lb h2{font-family:"DotGothic16","VT323",monospace;font-size:30px;line-height:1.05;margin:0}
+  .lb h2{font-size:22px;font-weight:600;line-height:1.2;margin:0}
   .lb .close{align-self:flex-end;background:none;border:0;font-size:26px;cursor:pointer;color:var(--ink-soft);margin:-8px -8px 0 0}
-  .lb .prompt{font-size:12.5px;color:var(--ink-soft);background:var(--paper);border-radius:10px;padding:10px 12px;line-height:1.45}
-  .lb .prompt b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+  .lb .prompt{font-size:12px;color:var(--ink-soft);background:var(--paper);border-radius:10px;padding:10px 12px;line-height:1.45}
+  .lb .prompt b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;color:var(--accent)}
+  .lb .prompt b:before{content:"# ";opacity:.6}
 
 
   /* ── animated ascii background ───────────── */
@@ -167,8 +171,8 @@
     90%{transform:translate(-4px,8px) rotate(-8deg)}100%{transform:translate(0,0) rotate(-8deg)}}
   @media (prefers-reduced-motion: reduce){.bg .sp{animation:none}}
 
-  footer{margin-top:60px;text-align:center;color:var(--ink-soft);font-size:14px}
-  footer .paw{font-family:"DotGothic16","VT323",monospace;font-size:20px;color:var(--ink)}
+  footer{margin-top:60px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7}
+  footer .paw{font-size:14px;color:var(--ink);margin-bottom:6px;letter-spacing:.1em}
 
   @media (max-width:760px){
     .latest,.lb{grid-template-columns:1fr}
@@ -190,13 +194,7 @@
       </div>
       <i class="head h1"></i><i class="head h2"></i><i class="head h3"></i><i class="head h4"></i><i class="head h5"></i>
     </div>
-    <h1><pre class="ascii-title" aria-label="Peewee Paints">  (`-&#x27;)        (`-&#x27;)      (`-&#x27;)          (`-&#x27;)       (`-&#x27;)           (`-&#x27;)            (`-&#x27;)
-  (00 )        (00 )      (00 )          (00 )       (00 )           (00 )            (00 )
-    ____  ______ ______ _       __ ______ ______  <span>    ____  ___     ____ _   __ ______ _____</span>
-   / __ \/ ____// ____/| |     / // ____// ____/  <span>   / __ \/   |   /  _// | / //_  __// ___/</span>
-  / /_/ / __/  / __/   | | /| / // __/  / __/     <span>  / /_/ / /| |   / / /  |/ /  / /   \__ \ </span>
- / ____/ /___ / /___   | |/ |/ // /___ / /___     <span> / ____/ ___ | _/ / / /|  /  / /   ___/ / </span>
-/_/   /_____//_____/   |__/|__//_____//_____/     <span>/_/   /_/  |_|/___//_/ |_/  /_/   /____/  </span></pre></h1>
+    <h1><div class="wordmark" role="img" aria-label="Peewee Paints"></div></h1>
     <p class="tag" id="tagline">a small cat, a big brush, and whatever the internet is yelling about today</p>
     <div class="status">
       <span class="pill"><i class="dot" id="dot"></i><span id="statusText">warming up the palette…</span></span>
@@ -215,7 +213,7 @@
   <div class="empty" id="empty" hidden><b>no paintings yet</b>Peewee is sniffing the internet for something worth painting. check back in a bit. mrrp.</div>
 
   <footer>
-    <div class="paw">— peewee —</div>
+    <div class="paw">-- peewee --</div>
     every painting is made by an autonomous cat, inspired by Claude Monet and whatever was trending at the time.<br>
     no real people are depicted. topics are chosen by a small robot brain; complaints may be filed with the nearest sunbeam.
   </footer>
