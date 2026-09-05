@@ -7,7 +7,7 @@
 <meta name="description" content="Peewee is a small cat who paints an abstract impressionist painting about whatever the internet is talking about, every 30 minutes.">
 <link rel="icon" href="assets/peewee-avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@700&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#faf8f2; --ink:#3a3835; --ink-soft:#6f6b64; --line:#e3ded2;
@@ -51,9 +51,9 @@
   @keyframes hover{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-3deg)}50%{transform:translateY(-10px) rotate(0)}
     75%{transform:translateY(-5px) rotate(3deg)}100%{transform:translateY(0) rotate(0)}}
   h1{margin:0;font-weight:400}
-  .ascii-title{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:clamp(5.4px,1.15vw,14px);
-    line-height:1.12;margin:0;color:var(--ink);white-space:pre;text-align:left;display:inline-block}
-  .ascii-title span{color:var(--accent)}
+  .wordmark{width:min(760px,92vw);aspect-ratio:1632/319;margin:0 auto;
+    -webkit-mask:url(assets/wordmark.png) center/contain no-repeat;mask:url(assets/wordmark.png) center/contain no-repeat;
+    background:linear-gradient(90deg,var(--ink) 0 50.5%,var(--accent) 50.5%)}
   .tag{margin:8px 0 0;color:var(--ink-soft);font-size:17px;max-width:60ch}
   .status{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px;font-size:13.5px;color:var(--ink-soft)}
   .pill{font-family:"DotGothic16","VT323",monospace;font-size:14px;display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--card)}
@@ -114,7 +114,11 @@
 
 
   /* ── animated ascii background ───────────── */
-  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.11}
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.13;
+    /* soft halo: keep the sprites away from the hero at the top-centre, stronger toward the edges */
+    -webkit-mask-image:radial-gradient(ellipse 46% 42% at 50% 22%, transparent 0 55%, #000 100%);
+            mask-image:radial-gradient(ellipse 46% 42% at 50% 22%, transparent 0 55%, #000 100%)}
+  .bg.scrolled{-webkit-mask-image:none;mask-image:none}
   .bg .sp{position:absolute;width:var(--s);height:var(--s);background-repeat:no-repeat;background-position:center;
     background-size:contain;image-rendering:pixelated;will-change:transform;animation-timing-function:steps(1,end)}
   .wrap{position:relative;z-index:1}
@@ -186,13 +190,7 @@
       </div>
       <i class="head h1"></i><i class="head h2"></i><i class="head h3"></i><i class="head h4"></i><i class="head h5"></i>
     </div>
-    <h1><pre class="ascii-title" aria-label="Peewee Paints">  (`-&#x27;)        (`-&#x27;)      (`-&#x27;)          (`-&#x27;)       (`-&#x27;)           (`-&#x27;)            (`-&#x27;)
-  (00 )        (00 )      (00 )          (00 )       (00 )           (00 )            (00 )
-    ____  ______ ______ _       __ ______ ______  <span>    ____  ___     ____ _   __ ______ _____</span>
-   / __ \/ ____// ____/| |     / // ____// ____/  <span>   / __ \/   |   /  _// | / //_  __// ___/</span>
-  / /_/ / __/  / __/   | | /| / // __/  / __/     <span>  / /_/ / /| |   / / /  |/ /  / /   \__ \ </span>
- / ____/ /___ / /___   | |/ |/ // /___ / /___     <span> / ____/ ___ | _/ / / /|  /  / /   ___/ / </span>
-/_/   /_____//_____/   |__/|__//_____//_____/     <span>/_/   /_/  |_|/___//_/ |_/  /_/   /____/  </span></pre></h1>
+    <h1><div class="wordmark" role="img" aria-label="Peewee Paints"></div></h1>
     <p class="tag" id="tagline">a small cat, a big brush, and whatever the internet is yelling about today</p>
     <div class="status">
       <span class="pill"><i class="dot" id="dot"></i><span id="statusText">warming up the palette…</span></span>
@@ -243,6 +241,7 @@
   }
   build();
   let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(build, 200); });
+  addEventListener('scroll', () => bg.classList.toggle('scrolled', scrollY > 420), {passive:true});
 })();
 
 (async function(){
