@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and whatever the internet is yelling about today",
  "items": [
   {
+   "id": "20260906-1609-26e9",
+   "ts": "2026-09-06T20:12:52+00:00",
+   "image": "paintings/20260906-1609-26e9.jpg",
+   "thumb": "paintings/20260906-1609-26e9_thumb.jpg",
+   "topic": "UN adopts new world map showing Africa's true scale",
+   "why": "This is a historic, visually exciting moment about correcting centuries of cartographic distortion. The UN vote to phase out the Mercator projection and show Africa's actual massive scale is joyful, important news that translates beautifully into a Monet-style painting — expanding light, shifting perspective, a continent emerging in its true grandeur. It's positive, globally significant, and rich with metaphor.",
+   "title": "Impression: A Continent Unfolds at True Scale",
+   "concept": "A vast pond (Africa) that suddenly reveals itself to be far larger than the eye first saw — water lilies spreading across an immense surface, lily pads doubling and tripling in the light, perspective shifting as the true size becomes clear, borders dissolving into atmospheric colour.",
+   "image_prompt": "water lilies on a vast dark pond, suddenly expanding outward, lily pads multiplying across an enormous surface, light breaking through clouds, scale shifting, reflections doubling, borders dissolving into mist, a continent of flowers",
+   "palette": [
+    "#1a4d2e",
+    "#4a7c59",
+    "#8fb5a0",
+    "#d4a574",
+    "#f5e6d3"
+   ],
+   "tweet": "the un finally voted to show africa at its true scale on world maps. been painting it wrong all this time—the pond was so much bigger than i thought. mrrp 🌍",
+   "alt_text": "Impressionist painting of water lilies spreading across a vast dark pond, lily pads multiplying outward, warm light breaking through, scale expanding, borders dissolving into atmospheric mist.",
+   "mood": "wonder, correction, expansive revelation",
+   "colour_words": [
+    "deep forest green",
+    "warm savanna gold",
+    "pearl mist"
+   ],
+   "source_url": "https://www.theguardian.com/world/2026/sep/04/un-vote-world-map-mercator-equal-earth-africa",
+   "source": "news/theguardian.com"
+  },
+  {
    "id": "20260906-1559-fa51",
    "ts": "2026-09-06T20:04:23+00:00",
    "image": "paintings/20260906-1559-fa51.jpg",
@@ -116,5 +144,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-06T20:04:23+00:00"
+ "updated": "2026-09-06T20:12:52+00:00"
 }
