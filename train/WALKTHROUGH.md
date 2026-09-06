@@ -26,12 +26,17 @@ Training needs an NVIDIA GPU. Your Mac can't do this in reasonable time. Two rou
    pip install -r train/requirements-train.txt
    ```
 
-5. Upload the dataset: Connect → **Jupyter Lab**, navigate into `peewee/train/data/`, drag `peewee-dataset.zip`
-   into it, then back in the terminal:
+5. Upload the dataset: open **JupyterLab** from the pod's Connect panel, navigate into `peewee/train/`, click the
+   upload arrow and pick `peewee-dataset.zip` from your Mac. Then in a JupyterLab terminal (Launcher → Terminal),
+   one line at a time:
    ```bash
-   cd train/data && unzip peewee-dataset.zip && cd ../..
-   ls train/data/ready | head      # should list 001.jpg 001.txt …
+   cd /workspace/peewee/train
+   unzip -q peewee-dataset.zip
+   mkdir -p data captions && mv ready data/ready && mv data/ready/*.txt captions/
+   cd /workspace/peewee
+   ls train/data/ready | wc -l      # 110
    ```
+   (The .txt captions are moved aside: the trainer uses one shared prompt for a style LoRA, which works well.)
 
 6. Train:
    ```bash

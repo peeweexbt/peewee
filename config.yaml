@@ -77,7 +77,7 @@ painter:
   seed: -1                   # -1 = random
   local:
     model: "stabilityai/stable-diffusion-xl-base-1.0"
-    lora_path: ""            # set to train/output/peewee-memories/pytorch_lora_weights.safetensors after training
+    lora_path: "train/output/peewee-memories/pytorch_lora_weights.safetensors"
     lora_scale: 0.8
     trigger_word: "pwmemories"  # the token your LoRA was trained with; injected automatically if set
     device: auto             # auto | cuda | mps | cpu
@@ -91,15 +91,16 @@ painter:
     lora_url: ""             # public URL/HF repo of your trained LoRA (optional)
   # Keep this short: SDXL only reads ~60 words total, and the subject brief is added after it.
   style_prompt: >
-    late Claude Monet Giverny period oil painting, dense swirling brushstrokes, thick layered paint,
-    forms dissolving into colour, deep greens violets and rose, dappled light, painterly
+    a painting from peewee's memories, dark impressionist oil painting, glowing lantern light,
+    misty water, dense soft brushwork, deep greens blues and warm gold
   finish:
     # Confetti-dab finishing pass laid over the painting (the look of the mock painter, on top of a real Monet scene).
-    dabs_chance: 0.5         # 0 = never, 1 = every painting, 0.5 = half of them
-    dabs_strength: 0.75      # 0 = invisible … 1 = full mosaic
-    dabs_density: 1.0        # more/fewer dabs
+    dabs_chance: 0           # 0 = never, 1 = every painting, 0.5 = half of them
+    dabs_strength: 0.3       # 0 = invisible … 1 = full mosaic
+    dabs_density: 0.6        # more/fewer dabs
+    edge_crop: 0.045         # trim this fraction off each edge (removes stray painted "signatures")
   negative_prompt: >
-    text, watermark, signature, letters, words, logo, photo, photorealistic, 3d render, sharp focus,
+    text, watermark, signature, handwriting, autograph, artist signature, letters, words, logo, photo, photorealistic, 3d render, sharp focus,
     anime, cartoon, low quality, blurry mess, frame, border, deformed
 
 site:

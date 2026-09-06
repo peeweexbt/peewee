@@ -248,6 +248,11 @@ def paint(cfg, plan, out_path: Path) -> Path:
     else:
         raise ValueError(f"unknown painter backend {backend}")
     fin = cfg.painter.get("finish", {}) or {}
+    crop = float(fin.get("edge_crop", 0) or 0)   # trim a thin border: stray "signatures" live at the edges
+    if crop > 0:
+        w, h = img.size
+        dx, dy = int(w * crop), int(h * crop)
+        img = img.crop((dx, dy, w - dx, h - dy)).resize((w, h), Image.LANCZOS)
     if fin.get("dabs_chance", 0) > 0 and random.random() < float(fin["dabs_chance"]):
         strength = float(fin.get("dabs_strength", 0.55))
         img = dab_pass(img, strength=strength, density=float(fin.get("dabs_density", 1.0)))

@@ -18,23 +18,14 @@ if [ ! -f train/train_dreambooth_lora_sdxl.py ]; then
     https://raw.githubusercontent.com/huggingface/diffusers/main/examples/dreambooth/train_dreambooth_lora_sdxl.py
 fi
 
-# diffusers' dreambooth script reads captions from a dataset dir when --caption_column is used via
-# an imagefolder dataset; build the metadata.jsonl it expects.
-python - <<'PY'
-import json, pathlib, os
-d = pathlib.Path(os.environ.get("DATA", "train/data/ready"))
-with open(d / "metadata.jsonl", "w") as f:
-    for p in sorted(d.glob("*.png")):
-        cap = p.with_suffix(".txt").read_text().strip() if p.with_suffix(".txt").exists() else os.environ.get("TRIGGER","pwmemories")
-        f.write(json.dumps({"file_name": p.name, "caption": cap}) + "\n")
-print("metadata.jsonl written")
-PY
+# the reference script tracks diffusers main; make sure we have a source build
+python -c "import diffusers,sys; sys.exit(0 if 'dev' in diffusers.__version__ else 1)" 2>/dev/null \
+  || pip install -q git+https://github.com/huggingface/diffusers
 
 accelerate launch train/train_dreambooth_lora_sdxl.py \
   --pretrained_model_name_or_path="$MODEL" \
   --pretrained_vae_model_name_or_path="$VAE" \
-  --dataset_name="$DATA" \
-  --caption_column="caption" \
+  --instance_data_dir="$DATA" \
   --instance_prompt="$TRIGGER, a painting from peewee's memories" \
   --output_dir="train/output/$NAME" \
   --resolution=1024 \
