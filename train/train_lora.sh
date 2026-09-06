@@ -4,7 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-NAME="${NAME:-peewee-style}"
+NAME="${NAME:-peewee-memories}"
+TRIGGER="${TRIGGER:-pwmemories}"
 DATA="${DATA:-train/data/ready}"
 STEPS="${STEPS:-1500}"
 RANK="${RANK:-16}"
@@ -24,7 +25,7 @@ import json, pathlib, os
 d = pathlib.Path(os.environ.get("DATA", "train/data/ready"))
 with open(d / "metadata.jsonl", "w") as f:
     for p in sorted(d.glob("*.png")):
-        cap = p.with_suffix(".txt").read_text().strip() if p.with_suffix(".txt").exists() else "pwstyle"
+        cap = p.with_suffix(".txt").read_text().strip() if p.with_suffix(".txt").exists() else os.environ.get("TRIGGER","pwmemories")
         f.write(json.dumps({"file_name": p.name, "caption": cap}) + "\n")
 print("metadata.jsonl written")
 PY
@@ -34,7 +35,7 @@ accelerate launch train/train_dreambooth_lora_sdxl.py \
   --pretrained_vae_model_name_or_path="$VAE" \
   --dataset_name="$DATA" \
   --caption_column="caption" \
-  --instance_prompt="pwstyle, an impressionist painting" \
+  --instance_prompt="$TRIGGER, a painting from peewee's memories" \
   --output_dir="train/output/$NAME" \
   --resolution=1024 \
   --train_batch_size=1 \

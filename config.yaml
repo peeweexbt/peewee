@@ -77,9 +77,9 @@ painter:
   seed: -1                   # -1 = random
   local:
     model: "stabilityai/stable-diffusion-xl-base-1.0"
-    lora_path: ""            # e.g. train/output/peewee-style.safetensors once you've trained one
+    lora_path: ""            # set to train/output/peewee-memories/pytorch_lora_weights.safetensors after training
     lora_scale: 0.8
-    trigger_word: "pwstyle"  # the token your LoRA was trained with; injected automatically if set
+    trigger_word: "pwmemories"  # the token your LoRA was trained with; injected automatically if set
     device: auto             # auto | cuda | mps | cpu
     dtype: auto              # auto | float16 | bfloat16 | float32
   remote_sd:
