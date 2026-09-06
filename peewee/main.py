@@ -52,7 +52,7 @@ def run_once(cfg, dry: bool = False, plan_only: bool = False) -> dict | None:
     painter.paint(cfg, plan, img_path)
 
     entry = publish_site.add_to_feed(cfg, plan, img_path, pid)
-    memory.remember(plan.topic, plan.title)
+    memory.remember(plan.topic, plan.title, " ".join(plan.image_prompt.split()[:10]))
 
     page_url = f"{cfg.site.base_url.rstrip('/')}/#{pid}" if cfg.site.base_url else None
     if dry:

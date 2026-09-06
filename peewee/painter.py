@@ -32,7 +32,7 @@ def full_prompt(cfg, subject: str, colour_words: list[str] | None = None) -> str
     # style FIRST — CLIP truncates at 77 tokens, so the subject is what gets clipped if anything does
     words = subject.strip().rstrip(".").split()
     subject = " ".join(words[:42])
-    parts = [p for p in (trig, style, subject) if p]
+    parts = [p for p in (trig, subject, style) if p]
     return ", ".join(parts)
 
 

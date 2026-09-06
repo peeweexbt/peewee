@@ -49,14 +49,15 @@ PLAN_TOOL = {
             "image_prompt": {
                 "type": "string",
                 "description": (
-                    "The scene to paint. START with one concrete late-Monet motif that carries the metaphor — favour Giverny: "
-                    "'water lilies on a dark pond', 'a japanese footbridge tangled in green', 'a weeping willow over water', "
-                    "'a rose-arch garden path', 'wisteria hanging over a pond', 'irises by the water', 'ice floes on the seine at dawn'; "
-                    "occasionally 'haystacks in a field', 'a row of poplars', 'a cathedral facade in mist', 'a train station full of steam', "
-                    "'sailboats in harbor fog', 'chalk cliffs and sea' (no identifiable real people). Then light, weather, "
-                    "time of day, and 1-2 surprising elements that hint at the topic. No text, no logos, no brand names. "
-                    "HARD LIMIT 30 words, comma-separated visual phrases, no full sentences. "
-                    "(a stock crash = haystacks collapsing at violet dusk; a rocket launch = a white column lifting off a lily pond)"
+                    "The scene to paint, 20-30 words, comma-separated visual phrases. START with a concrete SETTING and SUBJECT that "
+                    "fit the topic — choose freely and vary widely: a city street, a kitchen, a stadium, a rooftop, a highway, "
+                    "a harbor, a desert, a snowfield, a train platform, a library, a greenhouse, a carnival, a theatre, a subway, "
+                    "a mountain pass, a cornfield, a laboratory, an arcade, a bedroom window, a market, a forest road, a bridge, "
+                    "a courtyard, a beach at noon, a rainy bus stop, a diner, a garden in daylight… Then the light and weather, "
+                    "then 1-2 surprising elements that hint at the topic. Any time of day — not only night. "
+                    "No text, no logos, no brand names, no real people's likenesses. "
+                    "(a stock crash = a trading floor emptying at dusk, papers drifting; a rocket launch = a white column rising "
+                    "over a flat desert at dawn; a viral recipe = a crowded kitchen table in warm lamplight)"
                 ),
             },
             "palette": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 5,
@@ -94,6 +95,9 @@ Selection rules:
 - Never repeat a topic in the RECENTLY PAINTED list.
 - {sens}
 - Never depict real people's likenesses, logos, or text in the image prompt. Paint the *feeling* of the thing.
+- VARIETY IS ESSENTIAL: choose a setting that fits the topic, and never reuse a setting from RECENT SCENES. Water scenes
+  (lakes, ponds, rivers, harbors) are allowed at most one in every five paintings. Mix daytime, dusk, night, interiors,
+  cities, wild landscapes, close-ups, crowds, empty rooms.
 
 Write the tweet in {p.name}'s voice: first person, warm, a little funny, specific enough that people recognise the topic.
 Call the submit_painting_plan tool exactly once."""
@@ -126,7 +130,8 @@ def think(cfg, trends: list[Trend], memory: Memory) -> Plan:
     user = f"""CANDIDATE TRENDS RIGHT NOW:
 {cand_lines}
 
-RECENTLY PAINTED (avoid): {json.dumps(recent[-30:])}
+RECENTLY PAINTED TOPICS (avoid): {json.dumps(recent[-30:])}
+RECENT SCENES (do NOT reuse these settings): {json.dumps(memory.recent_scenes())}
 
 Pick one and plan the painting."""
 

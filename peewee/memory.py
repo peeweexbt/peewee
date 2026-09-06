@@ -38,8 +38,11 @@ class Memory:
                 return True
         return False
 
-    def remember(self, topic: str, title: str) -> None:
-        self.items.append({"ts": time.time(), "topic": topic, "title": title})
+    def recent_scenes(self, n: int = 12) -> list[str]:
+        return [i.get("scene", "") for i in self.items[-n:] if i.get("scene")]
+
+    def remember(self, topic: str, title: str, scene: str = "") -> None:
+        self.items.append({"ts": time.time(), "topic": topic, "title": title, "scene": scene})
         cutoff = time.time() - self.window * 4
         self.items = [i for i in self.items if i["ts"] >= cutoff]
         self.path.parent.mkdir(parents=True, exist_ok=True)
