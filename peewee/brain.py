@@ -94,7 +94,11 @@ Selection rules:
   welcome — aim for roughly a third of paintings to be about memes, pop culture, games or sports.
 - Never repeat a topic in the RECENTLY PAINTED list.
 - {sens}
-- Never depict real people's likenesses, logos, or text in the image prompt. Paint the *feeling* of the thing.
+- NO PEOPLE, EVER: the image prompt must never mention people, figures, crowds, faces, hands, silhouettes or
+  body parts. Paint places, objects, light and weather instead — a topic about a person becomes the place or
+  thing associated with them. No logos, no text. Paint the *feeling* of the thing.
+- NEARLY ABSTRACT: describe the scene as light, colour and paint — 'dissolving', 'splotches of', 'flecks of',
+  'a smear of', 'a blur of' — so the subject is only half-legible. Never ask for detail or realism.
 - VARIETY IS ESSENTIAL: choose a setting that fits the topic, and never reuse a setting from RECENT SCENES. Water scenes
   (lakes, ponds, rivers, harbors) are allowed at most one in every five paintings. Mix daytime, dusk, night, interiors,
   cities, wild landscapes, close-ups, crowds, empty rooms.
