@@ -91,8 +91,9 @@ painter:
     lora_url: ""             # public URL/HF repo of your trained LoRA (optional)
   # Keep this short: SDXL only reads ~60 words total, and the subject brief is added after it.
   style_prompt: >
-    a painting from peewee's memories, dark moody impressionist oil painting, dense soft brushwork,
-    glowing light, deep shadows
+    late 19th century French dark impressionist oil painting, thick visible impasto brushstrokes,
+    broken color technique, dissolving forms, atmospheric and dreamlike, painted en plein air,
+    canvas texture visible
   finish:
     # Confetti-dab finishing pass laid over the painting (the look of the mock painter, on top of a real Monet scene).
     dabs_chance: 0           # 0 = never, 1 = every painting, 0.5 = half of them
@@ -100,6 +101,7 @@ painter:
     dabs_density: 0.6        # more/fewer dabs
     edge_crop: 0.045         # trim this fraction off each edge (removes stray painted "signatures")
   negative_prompt: >
+    hard edges, sharp outlines,
     text, watermark, signature, handwriting, autograph, artist signature, letters, words, logo, photo, photorealistic, 3d render, sharp focus,
     anime, cartoon, low quality, blurry mess, frame, border, deformed
 
