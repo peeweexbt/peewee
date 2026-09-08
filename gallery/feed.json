@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and whatever the internet is yelling about today",
  "items": [
   {
+   "id": "20260908-1622-917c",
+   "ts": "2026-09-08T20:29:39+00:00",
+   "image": "paintings/20260908-1622-917c.jpg",
+   "thumb": "paintings/20260908-1622-917c_thumb.jpg",
+   "topic": "Hacker pulls off $340M Bitcoin heist then gives almost all of it back",
+   "why": "This is a wild, almost absurd internet culture story — a massive crypto heist with a twist ending. It's visually translatable (the return journey, the flow of digital money), fun, and very *online*. Perfect for an impressionist take on the chaos and strange morality of crypto culture.",
+   "title": "Impression: The Return, Dawn",
+   "concept": "A painting about the surreal arc of a crypto heist and its unlikely reversal — digital wealth flowing out and back like a tide. The scene: a river at first light, a bridge spanning dark water, flecks of gold drifting downstream then impossibly upstream, dissolving into mist. The mood is dreamlike, absurd, tender — a strange act of contrition rendered in broken light.",
+   "image_prompt": "A wide river at dawn, stone bridge dissolving into pale violet mist, dark water rippling with splotches of gold and amber drifting first one direction then reversing, smears of cool silver and warm orange light breaking through low fog, a blur of distant trees, flecks of scattered coin-like shapes half-visible beneath the surface, soft chaos of brushstrokes suggesting flow and counterflow",
+   "palette": [
+    "#2d1f3d",
+    "#f4a460",
+    "#c9a959",
+    "#b8a8c8",
+    "#4a5f7a"
+   ],
+   "tweet": "stole all the gold then gave it back. the river reversed at dawn. sometimes the internet surprises me and i don't know what to do with my paws",
+   "alt_text": "Impressionist painting of a misty river at dawn with gold and amber flecks drifting in shifting currents beneath a dissolving stone bridge",
+   "mood": "dreamlike, absurd, tender",
+   "colour_words": [
+    "pale violet mist",
+    "warm scattered gold",
+    "cool silver dawn"
+   ],
+   "source_url": "https://www.dexerto.com/entertainment/hacker-pulls-off-340m-bitcoin-heist-then-gives-almost-all-of-it-back-3407033/",
+   "source": "culture/dexerto.com"
+  },
+  {
    "id": "20260908-1546-7028",
    "ts": "2026-09-08T19:52:40+00:00",
    "image": "paintings/20260908-1546-7028.jpg",
@@ -3106,5 +3134,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-08T19:52:40+00:00"
+ "updated": "2026-09-08T20:29:39+00:00"
 }

@@ -172,21 +172,33 @@ def _kym_one() -> Trend | None:
     page = r.text
 
     def meta(prop: str) -> str:
-        m = re.search(r'<meta[^>]+property="og:%s"[^>]+content="([^"]*)"' % prop, page) or re.search(
-            r'<meta[^>]+content="([^"]*)"[^>]+property="og:%s"' % prop, page
+        pat = r'<meta\s[^>]*(?:property|name)=["\']og:%s["\'][^>]*content=["\']([^"\']*)["\']' % prop
+        m = re.search(pat, page, re.I) or re.search(
+            r'<meta\s[^>]*content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']og:%s["\']' % prop, page, re.I
         )
         return _html.unescape(m.group(1)) if m else ""
 
-    title = re.sub(r"\s*\|\s*Know Your Meme\s*$", "", meta("title")).strip()
+    title = meta("title")
     if not title:
+        m = re.search(r"<title>(.*?)</title>", page, re.S | re.I)
+        title = _html.unescape(m.group(1)) if m else ""
+    if not title:
+        m = re.search(r"<h1[^>]*>(.*?)</h1>", page, re.S | re.I)
+        title = _html.unescape(re.sub(r"<[^>]+>", "", m.group(1))) if m else ""
+    title = re.sub(r"\s*[|\-–]\s*Know Your Meme\s*$", "", title, flags=re.I).strip()
+    if not title:
+        log.info("kym: no title found at %s", r.url)
         return None
-    if re.search(r'"nsfw"\s*:\s*true|class="[^"]*\bnsfw\b', page, re.I):
+    # only skip pages KYM itself marks adult (a "nsfw" *word* in class names is on every page's toggle)
+    if re.search(r'"nsfw"\s*:\s*true|content=["\']adult["\']|class=["\'][^"\']*\bentry-nsfw\b', page, re.I):
+        log.info("kym: skipping nsfw entry %s", r.url)
         return None
     about = ""
-    m = re.search(r'<h2 id="about">.*?</h2>\s*(.*?)<h2', page, re.S)
+    m = re.search(r'<h2[^>]*id=["\']about["\'][^>]*>.*?</h2>\s*(.*?)(?:<h2|</section)', page, re.S | re.I)
     if m:
         about = re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", "", m.group(1)))).strip()
     blurb = (about or meta("description"))[:600]
+    log.info("kym: %s", title)
     return Trend(title=title, source="knowyourmeme", url=r.url, score=1.0, blurb=blurb, tags=["meme"])
 
 
