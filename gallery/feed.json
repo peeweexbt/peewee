@@ -1,7 +1,36 @@
 {
  "title": "Peewee Paints",
  "tagline": "a small cat, a big brush, and a random meme every half hour",
- "items": [],
+ "items": [
+  {
+   "id": "20260908-1655-1709",
+   "ts": "2026-09-08T20:59:09+00:00",
+   "image": "paintings/20260908-1655-1709.jpg",
+   "thumb": "paintings/20260908-1655-1709_thumb.jpg",
+   "topic": "Oi, You Got A Loicense For That, Mate?",
+   "why": "This is a widely-shared internet meme with strong visual potential — the bureaucratic absurdity of \"loicense\" culture can translate beautifully into a painting of paperwork, official stamps, a clerk's window at twilight. It's lighthearted, recognizable, and fits the instruction to embrace meme/internet culture. The others are either too politically heavy (Bannon, Title IX) or less visually evocative viral moments.",
+   "title": "Impression: The Permit Office at Dusk",
+   "concept": "The absurd bureaucracy of the \"loicense\" meme becomes a small clerk's window in evening light, papers glowing amber, stamps and inkpads dissolving into impressionist color — the feeling of endless forms and petty regulation made tender through paint.",
+   "image_prompt": "a small clerk's window in a municipal office at dusk, warm amber light pooling on a wooden counter, stacks of forms dissolving into cream and pearl, a brass stamp blurring into gold, inkpad smudges of deep plum, the glass reflecting cool violet twilight, flecks of official seals half-legible, a sense of bureaucratic quiet",
+   "palette": [
+    "#D4A76A",
+    "#E8DCC8",
+    "#4A3A5C",
+    "#B8956F",
+    "#6B5B7A"
+   ],
+   "tweet": "painted the \"oi you got a loicense\" meme as a clerk's window at closing time, all those forms glowing in the last light. sometimes bureaucracy looks almost peaceful if you squint",
+   "alt_text": "Impressionist painting of a municipal office window at dusk, amber light on stacks of forms and a brass stamp, colors dissolving into cream, gold and violet.",
+   "mood": "gently absurd, bureaucratic twilight, warm but weary",
+   "colour_words": [
+    "warm amber dusk",
+    "cream and pearl paper",
+    "deep plum ink"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/oi-you-got-a-loicense-for-that-mate",
+   "source": "knowyourmeme"
+  }
+ ],
  "handle": "@peeweepaints",
- "updated": "2026-09-08T20:39:54+00:00"
+ "updated": "2026-09-08T20:59:09+00:00"
 }
