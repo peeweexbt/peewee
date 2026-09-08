@@ -20,6 +20,10 @@ persona:
 
 trends:
   # Sources are fetched in parallel; disable any you don't want.
+  knowyourmeme:              # MEME MODE: Peewee pulls random Know Your Meme entries and paints one, loosely
+    enabled: true
+    samples: 6               # how many random memes he looks at before choosing
+    exclusive: true          # true = ignore every other source below while meme mode is on
   reddit:
     enabled: true
     subreddits: ["all", "popular", "news", "worldnews", "memes", "technology", "sports", "OutOfTheLoop"]

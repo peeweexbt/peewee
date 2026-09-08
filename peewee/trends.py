@@ -163,6 +163,51 @@ def x_trends(woeid: int = 23424977) -> list[Trend]:
         return []
 
 
+# ── Know Your Meme: random entries ────────────────────────────────────────
+def _kym_one() -> Trend | None:
+    import html as _html
+
+    r = requests.get("https://knowyourmeme.com/memes/random", headers=UA, timeout=TIMEOUT, allow_redirects=True)
+    r.raise_for_status()
+    page = r.text
+
+    def meta(prop: str) -> str:
+        m = re.search(r'<meta[^>]+property="og:%s"[^>]+content="([^"]*)"' % prop, page) or re.search(
+            r'<meta[^>]+content="([^"]*)"[^>]+property="og:%s"' % prop, page
+        )
+        return _html.unescape(m.group(1)) if m else ""
+
+    title = re.sub(r"\s*\|\s*Know Your Meme\s*$", "", meta("title")).strip()
+    if not title:
+        return None
+    if re.search(r'"nsfw"\s*:\s*true|class="[^"]*\bnsfw\b', page, re.I):
+        return None
+    about = ""
+    m = re.search(r'<h2 id="about">.*?</h2>\s*(.*?)<h2', page, re.S)
+    if m:
+        about = re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", "", m.group(1)))).strip()
+    blurb = (about or meta("description"))[:600]
+    return Trend(title=title, source="knowyourmeme", url=r.url, score=1.0, blurb=blurb, tags=["meme"])
+
+
+def knowyourmeme_random(samples: int = 6) -> list[Trend]:
+    """Pull a handful of random meme entries so Peewee can pick one that paints well."""
+    out: list[Trend] = []
+    seen: set[str] = set()
+    for _ in range(samples * 2):
+        if len(out) >= samples:
+            break
+        try:
+            tr = _kym_one()
+            if tr and tr.url not in seen:
+                seen.add(tr.url)
+                out.append(tr)
+        except Exception as e:  # noqa: BLE001
+            log.warning("knowyourmeme random failed: %s", e)
+        time.sleep(0.8)
+    return out
+
+
 # ── Aggregate ─────────────────────────────────────────────────────────────
 def _normalise(trends: list[Trend]) -> list[Trend]:
     """Scale scores per-source to 0..1 so Reddit's 50k upvotes don't drown RSS."""
@@ -179,18 +224,22 @@ def _normalise(trends: list[Trend]) -> list[Trend]:
 def gather(cfg) -> list[Trend]:
     tc = cfg.trends
     jobs = []
+    kym = tc.get("knowyourmeme", {})
+    meme_mode = bool(kym.get("enabled")) and bool(kym.get("exclusive", True))
     with cf.ThreadPoolExecutor(max_workers=6) as ex:
-        if tc.reddit.enabled:
+        if kym.get("enabled"):
+            jobs.append(ex.submit(knowyourmeme_random, int(kym.get("samples", 6))))
+        if not meme_mode and tc.reddit.enabled:
             jobs.append(ex.submit(reddit, tc.reddit.subreddits, tc.reddit.limit_per_sub))
-        if tc.google_trends.enabled:
+        if not meme_mode and tc.google_trends.enabled:
             jobs.append(ex.submit(google_trends, tc.google_trends.geo))
-        if tc.news_rss.enabled:
+        if not meme_mode and tc.news_rss.enabled:
             jobs.append(ex.submit(news_rss, tc.news_rss.feeds))
-        if tc.get("culture_rss", {}).get("enabled"):
+        if not meme_mode and tc.get("culture_rss", {}).get("enabled"):
             jobs.append(ex.submit(news_rss, tc.culture_rss.feeds, 10, "culture"))
-        if tc.hackernews.enabled:
+        if not meme_mode and tc.hackernews.enabled:
             jobs.append(ex.submit(hackernews))
-        if tc.x_trends.enabled:
+        if not meme_mode and tc.x_trends.enabled:
             jobs.append(ex.submit(x_trends, tc.x_trends.woeid))
         results: list[Trend] = []
         for j in cf.as_completed(jobs):

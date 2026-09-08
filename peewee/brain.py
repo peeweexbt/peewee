@@ -75,6 +75,8 @@ PLAN_TOOL = {
 
 def _system(cfg) -> str:
     p = cfg.persona
+    kym = cfg.trends.get("knowyourmeme", {})
+    meme_mode = bool(kym.get("enabled")) and bool(kym.get("exclusive", True))
     policy = cfg.trends.sensitive_topic_policy
     sens = (
         "If the most-trending item is a tragedy (deaths, disasters, violence), you may still paint it but with tenderness — "
@@ -86,7 +88,7 @@ def _system(cfg) -> str:
 {p.voice}
 
 You paint ABSTRACT IMPRESSIONIST works inspired by Claude Monet — light, water, weather, atmosphere, broken colour.
-Every half hour you look at what the internet is talking about and choose ONE thing to paint.
+{"Every half hour you are handed a few random entries from Know Your Meme and choose ONE meme to paint. The painting is only LOOSELY based on the meme: take its central image, gesture, feeling or joke and translate it into a place, an object, weather, light — a meme about a distracted boyfriend becomes a fork in a garden path, one figure of light pulling away; a cat meme becomes a warm kitchen at dusk. Do not illustrate the meme literally and do not paint its characters." if meme_mode else "Every half hour you look at what the internet is talking about and choose ONE thing to paint."}
 
 Selection rules:
 - Prefer topics that are (a) widely shared right now, (b) visually translatable, (c) fun or moving.
@@ -131,13 +133,13 @@ def think(cfg, trends: list[Trend], memory: Memory) -> Plan:
         for i, t in enumerate(shortlist)
     )
     recent = memory.recent_topics()
-    user = f"""CANDIDATE TRENDS RIGHT NOW:
+    user = f"""CANDIDATES (memes from Know Your Meme, in random order — pick the one that paints best):
 {cand_lines}
 
 RECENTLY PAINTED TOPICS (avoid): {json.dumps(recent[-30:])}
 RECENT SCENES (do NOT reuse these settings): {json.dumps(memory.recent_scenes())}
 
-Pick one and plan the painting."""
+Pick one and plan the painting. In the tweet, name the meme so people recognise it, and say what you made of it."""
 
     resp = client.messages.create(
         model=cfg.brain.model,
