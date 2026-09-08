@@ -112,7 +112,7 @@ painter:
 
 site:
   title: "Peewee Paints"
-  tagline: "a small cat, a big brush, and whatever the internet is yelling about today"
+  tagline: "a small cat, a big brush, and a random meme every half hour"
   gallery_dir: gallery
   max_items_in_feed: 500
   publish:
