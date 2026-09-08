@@ -176,7 +176,12 @@
 
   @media (max-width:760px){
     .latest,.lb{grid-template-columns:1fr}
-    .lb img{max-height:52vh}
+    /* phone: the whole popup scrolls as one sheet instead of a pinned box with a tiny inner scroller */
+    dialog{max-width:100vw;width:100vw;margin:0;max-height:100dvh;height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .lb{border-radius:0;min-height:100%;overflow:visible}
+    .lb img{max-height:52vh;height:auto}
+    .lb .side{max-height:none;overflow:visible;padding-bottom:max(28px,env(safe-area-inset-bottom))}
+    .lb .close{position:sticky;top:0;z-index:2;background:var(--card);border-radius:50%;width:38px;height:38px;line-height:38px;text-align:center;margin:-10px -8px -30px 0}
   }
 </style>
 </head>
@@ -329,14 +334,14 @@
         </div>
       </div>`;
     history.replaceState(null, '', '#' + id);
-    dlg.showModal();
+    dlg.showModal(); document.body.style.overflow='hidden'; dlg.scrollTop=0;
   };
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-id]'); if (!t) return;
     e.preventDefault(); open(t.dataset.id);
   });
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
-  dlg.addEventListener('close', () => history.replaceState(null, '', location.pathname));
+  dlg.addEventListener('close', () => { document.body.style.overflow=''; history.replaceState(null, '', location.pathname); });
   if (location.hash.length > 1) open(location.hash.slice(1));
 
   // auto-refresh so the page stays fresh in an open tab
