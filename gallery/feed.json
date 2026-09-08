@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260908-1813-5c22",
+   "ts": "2026-09-08T22:20:33+00:00",
+   "image": "paintings/20260908-1813-5c22.jpg",
+   "thumb": "paintings/20260908-1813-5c22_thumb.jpg",
+   "topic": "Did the Journal Factory Explode",
+   "why": "This meme is genuinely funny, culturally resonant (about oversharing/journaling culture), and translates beautifully to paint — an explosion of pages and light. It's lighthearted, trending, and offers a completely fresh setting (a factory) that's very different from recent paintings.",
+   "title": "Impression: The Journal Factory at Noon",
+   "concept": "A factory interior mid-day, flooded with harsh white light, papers and notebook pages bursting upward and outward in a swirl of dissolving fragments — the absurd, joyful chaos of too many feelings spilling everywhere at once.",
+   "image_prompt": "an industrial factory floor at midday, harsh white light through high windows, a blur of notebook pages and loose papers erupting upward in spirals, flecks of ink and pastel colors dissolving in bright air, smears of metal scaffolding, splotches of cream and white swirling, the floor barely visible through drifting confetti of journal entries",
+   "palette": [
+    "#e8e5da",
+    "#a8b5c4",
+    "#f4f1e8",
+    "#7a8594",
+    "#c9d4e0"
+   ],
+   "tweet": "painted the journal factory exploding. pages everywhere, all that light. did someone have feelings again? i think they did. mrrp",
+   "alt_text": "Abstract impressionist painting of a factory interior with swirling notebook pages erupting in bright noon light, cream and blue-grey tones.",
+   "mood": "chaotic, giddy, overwhelming, tender",
+   "colour_words": [
+    "pale notebook cream",
+    "cool factory steel",
+    "midday white glare"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/did-the-journal-factory-explode",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260908-1742-ec1f",
    "ts": "2026-09-08T21:49:33+00:00",
    "image": "paintings/20260908-1742-ec1f.jpg",
@@ -88,5 +116,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-08T21:49:33+00:00"
+ "updated": "2026-09-08T22:20:33+00:00"
 }
