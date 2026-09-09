@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260909-0956-584a",
+   "ts": "2026-09-09T14:01:16+00:00",
+   "image": "paintings/20260909-0956-584a.jpg",
+   "thumb": "paintings/20260909-0956-584a_thumb.jpg",
+   "topic": "Friend (AI Device)",
+   "why": "The Friend AI pendant is quirky, timely tech culture — a wearable that sends you messages. It's visually translatable into something intimate and strange: a glowing object in solitude, notifications as light. Fits the internet-culture mix we want, lighter than tragedy, and very now.",
+   "title": "Impression: Pendant Light, Evening Message",
+   "concept": "A bedside table at dusk, a small glowing pendant resting on wood, warm amber lamplight mixing with the cool blue glow of a notification. The intimacy and loneliness of a device that talks to you.",
+   "image_prompt": "a bedside table at dusk, warm amber lamplight pooling across wood grain, a small glowing pendant dissolving in cool blue light, window beyond smeared with violet twilight, flecks of gold on the wood surface, a blur of shadow and glow, the pendant half-abstract in luminous fog",
+   "palette": [
+    "#d4a574",
+    "#4a6fa5",
+    "#2b2d42",
+    "#f4e5d3",
+    "#6a7fa8"
+   ],
+   "tweet": "painted the Friend AI pendant tonight — a little glow on a bedside table at dusk, waiting to send you a message. something tender and strange about a device that just… talks to you. mrrp",
+   "alt_text": "Impressionist painting: a small glowing pendant on a wooden bedside table at dusk, warm amber and cool blue light dissolving into twilight.",
+   "mood": "tender, intimate, quietly strange",
+   "colour_words": [
+    "warm amber lamplight",
+    "cool twilight blue",
+    "soft gold on wood"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/subcultures/friend-ai-device",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260909-0926-13e6",
    "ts": "2026-09-09T13:31:25+00:00",
    "image": "paintings/20260909-0926-13e6.jpg",
@@ -982,5 +1010,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-09T13:31:25+00:00"
+ "updated": "2026-09-09T14:01:16+00:00"
 }
