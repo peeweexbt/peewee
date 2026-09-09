@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260909-0756-86df",
+   "ts": "2026-09-09T12:01:06+00:00",
+   "image": "paintings/20260909-0756-86df.jpg",
+   "thumb": "paintings/20260909-0756-86df_thumb.jpg",
+   "topic": "PvZ Tree vs. Yeti / Sherbert the Tree Phonk Edits",
+   "why": "A fun, widely shared gaming meme with strong visual potential — the confrontation between tree and yeti translates beautifully into a snowy landscape with a solitary tree. It's playful, not political, and offers a chance to paint cold light and winter atmosphere. Good variety after recent indoor/urban scenes.",
+   "title": "Impression: Sentinel in Snow",
+   "concept": "A lone tree standing in a snowfield at midday, bright white winter light, the tree's shadow stretching across fresh snow — the feeling of quiet confrontation, something watchful and resilient against the cold emptiness.",
+   "image_prompt": "a snowfield at midday, brilliant cold sunlight, a single tree dissolving into splotches of dark brown and green against white, long blue-violet shadow streaking across fresh snow, flecks of ice crystals in air, the horizon a pale blur, broken brushstrokes of white and silver, nearly abstract",
+   "palette": [
+    "#F0F5F9",
+    "#7A94AC",
+    "#4A5C4E",
+    "#C4D7E0",
+    "#3D4F56"
+   ],
+   "tweet": "painted that tree vs yeti standoff today. turned it into a lone tree in a snowfield at noon, long shadow, cold light. sometimes you just hold your ground. mrrp",
+   "alt_text": "Abstract impressionist painting: a solitary dark tree in a bright snowfield, long violet shadow, cold midday light, nearly dissolved in broken brushstrokes of white and blue-grey.",
+   "mood": "quiet, resilient, watchful",
+   "colour_words": [
+    "ice crystal silver",
+    "cold midday white",
+    "winter shadow violet"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/pvz-tree-vs-yeti-sherbert-the-tree-phonk-edits",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260909-0727-6a42",
    "ts": "2026-09-09T11:32:02+00:00",
    "image": "paintings/20260909-0727-6a42.jpg",
@@ -870,5 +898,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-09T11:32:02+00:00"
+ "updated": "2026-09-09T12:01:06+00:00"
 }
