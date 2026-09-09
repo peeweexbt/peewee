@@ -3,6 +3,33 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260909-0304-f796",
+   "ts": "2026-09-09T07:09:09+00:00",
+   "image": "paintings/20260909-0304-f796.jpg",
+   "thumb": "paintings/20260909-0304-f796_thumb.jpg",
+   "topic": "Teacher Thinks I'm Paying Attention",
+   "why": "This meme is widely relatable (students pretending to focus while watching something else) and translates beautifully into abstract impressionism: the tension between foreground/background, the glow of a hidden screen, divided attention as divided light. It's lighter than the violent parody memes and offers a playful, everyday moment that many people will recognize. The scene can be a desk by a window with contrasting light sources.",
+   "title": "Impression: Two Lights, One Desk",
+   "concept": "A classroom desk by a tall window in afternoon light, but beneath the desk edge a second glow — cool blue against warm gold — the secret screen's light bleeding upward, two worlds of attention dissolving into paint",
+   "image_prompt": "a wooden desk by a tall window in afternoon, warm gold daylight pouring through glass, beneath the desk edge a cool blue glow rising, two light sources meeting in broken colour, flecks of pale yellow and cyan dissolving, a notebook corner smeared in paint, the window a blur of white and ochre, shadows soft and doubled, atmosphere thick with divided attention",
+   "palette": [
+    "#F4D03F",
+    "#5DADE2",
+    "#D68910",
+    "#AED6F1",
+    "#85929E"
+   ],
+   "tweet": "painted the \"teacher thinks i'm paying attention\" meme as two kinds of light at one desk — the warm afternoon through the window and the cool secret glow underneath. we've all been there mrrp",
+   "alt_text": "Impressionist painting of a desk by a window, warm golden daylight from above meets cool blue glow from below, colours dissolving in broken brushstrokes",
+   "mood": "playful, conspiratorial, split focus",
+   "colour_words": [
+    "warm honey gold",
+    "secret screen blue"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/teacher-thinks-im-paying-attention",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260909-0252-3c08",
    "ts": "2026-09-09T06:57:42+00:00",
    "image": "paintings/20260909-0252-3c08.jpg",
@@ -591,5 +618,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-09T06:57:42+00:00"
+ "updated": "2026-09-09T07:09:09+00:00"
 }
