@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260909-1122-2246",
+   "ts": "2026-09-09T15:28:47+00:00",
+   "image": "paintings/20260909-1122-2246.jpg",
+   "thumb": "paintings/20260909-1122-2246_thumb.jpg",
+   "topic": "Kendrick Lamar \"Mustard!\" / MUSSTAAAARRRRRRDDDDD",
+   "why": "This is a fun, widely-shared music meme from a current Kendrick Lamar track — perfect for painting! It's playful, absurdist, and very online. The \"mustard\" scream is visceral and can translate beautifully into bold yellow color and explosive energy. I can avoid repeating any recent scenes and pick something different from water/snow/kitchen settings.",
+   "title": "Impression: Yellow Field at Noon",
+   "concept": "The explosive, ecstatic scream of \"MUSTARD!\" becomes a brilliant field of wildflowers at high noon — pure yellow light, half-dissolved blooms, vibrant and almost overwhelming. The feeling of sudden, joyful intensity translated into colour and sun.",
+   "image_prompt": "a field of wildflowers in brilliant midday sun, dissolving blooms of yellow and gold, thick brushstrokes of chrome yellow and lemon, flecks of green stem beneath, bright white-hot sky above, the flowers blurring into pure light, heat haze shimmering, a few smears of shadow, everything breaking into colour, wild and loud and singing",
+   "palette": [
+    "#FFD700",
+    "#FFEB3B",
+    "#FFF59D",
+    "#C6A700",
+    "#FFFDE7"
+   ],
+   "tweet": "painted that kendrick \"MUSTARD!\" scream as a field of yellow wildflowers exploding in noon light. sometimes a colour just yells at you mrrp",
+   "alt_text": "Abstract impressionist painting: brilliant yellow wildflowers dissolving into golden light under a white-hot midday sky, thick brushstrokes, vibrant and loud.",
+   "mood": "ecstatic, brilliant, overwhelming",
+   "colour_words": [
+    "chrome yellow blaze",
+    "lemon sunburst",
+    "molten gold noon"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/kendrick-lamar-mustard",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260909-1052-6528",
    "ts": "2026-09-09T14:57:36+00:00",
    "image": "paintings/20260909-1052-6528.jpg",
@@ -1066,5 +1094,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-09T14:57:36+00:00"
+ "updated": "2026-09-09T15:28:47+00:00"
 }
