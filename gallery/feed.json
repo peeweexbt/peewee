@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260910-0354-b655",
+   "ts": "2026-09-10T07:59:08+00:00",
+   "image": "paintings/20260910-0354-b655.jpg",
+   "thumb": "paintings/20260910-0354-b655_thumb.jpg",
+   "topic": "Pig Electrocuted GIF / Exploding Pig",
+   "why": "This is a widely shared internet meme with strong visual and emotional energy — the chaotic, electric moment. It's silly, absurd, very online, and translates beautifully into light and energy: a transformer box on a rural roadside, crackling with sudden voltage. Perfect for abstract impressionism's love of light and atmosphere, and brings variety after recent deeper/cultural topics.",
+   "title": "Impression: Transformer at the Crossing",
+   "concept": "An electrical transformer box beside a quiet country road at midday, sudden crackling light and heat radiating outward, the air shimmering with voltage — the split-second before disaster, energy barely contained, dissolving into white-hot flecks and electric blue.",
+   "image_prompt": "a metal transformer box beside a dusty country road at high noon, harsh sunlight, crackling electric blue and white sparks dissolving into air, shimmering heat haze, flecks of brilliant yellow-white light, a smear of scorched metal, pale gravel road dissolving at edges, dry grass blurring into ochre, the whole scene vibrating with sudden voltage",
+   "palette": [
+    "#E8F4FF",
+    "#0066CC",
+    "#FFD700",
+    "#FFFACD",
+    "#8B7355"
+   ],
+   "tweet": "painted that exploding pig gif everyone keeps posting. made it a transformer box on a back road at noon, all crackle and heat shimmer. the exact moment before everything goes wrong",
+   "alt_text": "Abstract impressionist painting: a metal transformer beside a country road at noon, electric blue and white sparks crackling in harsh sunlight, shimmering heat haze.",
+   "mood": "chaotic, electric, the split-second before disaster",
+   "colour_words": [
+    "electric cobalt blue",
+    "white-hot brilliance",
+    "scorched ochre"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/pig-electrocuted-gif-exploding-pig",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260910-0324-7af8",
    "ts": "2026-09-10T07:28:45+00:00",
    "image": "paintings/20260910-0324-7af8.jpg",
@@ -1374,5 +1402,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-10T07:28:45+00:00"
+ "updated": "2026-09-10T07:59:08+00:00"
 }
