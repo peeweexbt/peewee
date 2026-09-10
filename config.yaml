@@ -101,7 +101,7 @@ painter:
     and dreamlike, painted en plein air, canvas texture visible
   finish:
     # Confetti-dab finishing pass laid over the painting (the look of the mock painter, on top of a real Monet scene).
-    dabs_chance: 0.6           # 0 = never, 1 = every painting, 0.5 = half of them
+    dabs_chance: 0.3           # 0 = never, 1 = every painting, 0.5 = half of them
     dabs_strength: 0.25       # 0 = invisible … 1 = full mosaic
     dabs_density: 0.6        # more/fewer dabs
     edge_crop: 0.045         # trim this fraction off each edge (removes stray painted "signatures")
