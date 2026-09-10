@@ -78,6 +78,8 @@
   .toy.mouse{background-image:url(assets/sprites/mouse.png);width:48px;height:30px}
   .toy.fish{background-image:url(assets/sprites/fish.png);width:52px;height:24px}
   .toy.flip{transform:translate(-50%,-50%) scaleX(-1)}
+  .brush{position:absolute;transform:translate(-50%,-50%);width:13%;aspect-ratio:300/38;background:url(assets/play/brush.png) center/contain no-repeat;z-index:2;display:none;pointer-events:none}
+  .brush.on{display:block}
   .string{position:absolute;left:0;top:0;height:1.5px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px);transform-origin:0 50%;z-index:1;display:none}
   .string.on{display:block}
   .fx{position:absolute;transform:translate(-50%,-50%);font-size:13px;color:var(--accent);pointer-events:none;z-index:5;animation:rise 1s ease-out forwards;white-space:pre}
@@ -138,6 +140,7 @@
     <div class="furn bowl" id="bowl"></div>
     <div class="furn post" id="post"></div>
     <div class="string" id="string"></div>
+    <div class="brush" id="brush"></div>
     <div class="toy yarn" id="toy-yarn"></div>
     <div class="toy feather" id="toy-feather"></div>
     <div class="toy mouse" id="toy-mouse"></div>
@@ -183,9 +186,14 @@
   const F = {
     sit: ['sit'], walk: ['walk1','walk2','walk3','walk4'], loaf: ['rest'], sleep: ['rest'],
     groom: ['rest','bat'], stalk: ['walk1'], play: ['bat','surprised'], eat: ['surprised','sit'], happy: ['surprised'],
+    putdown: ['rest'], pickup: ['rest'],
   };
   const ALL = ['sit','surprised','rest','bat','walk1','walk2','walk3','walk4'];
   ALL.forEach(n => { new Image().src = FR+n+'.png'; new Image().src = FR+n+'-blink.png'; });
+  ['sit-nb','surprised-nb','rest-nb','bat-nb'].forEach(n => { new Image().src = FR+n+'.png'; new Image().src = FR+n+'-blink.png'; });
+  new Image().src = FR+'brush.png';
+  const HAS_NB = new Set(['sit','surprised','rest','bat']);
+  const brushEl = document.getElementById('brush');
   const SIDE = new Set(['walk1','walk2','walk3','walk4']);   // only these flip with direction
 
   const SAY = {
@@ -200,6 +208,8 @@
     tired: ['ok i am tired now', 'bed. bed bed bed.', 'that was a lot of pouncing'],
     pet: ['*purr*', 'purrrr', 'ok. yes. there.', 'more', '*head bonk*'],
     bored: ['are you going to throw it', 'i am waiting', 'well?'],
+    putdown: ['one sec. brush down.', 'let me put this down', 'brush goes here'],
+    pickup: ['ok. back to work.', 'my brush. mine.', 'where was i'],
   };
 
   // ── state ─────────────────────────────────────────────────
@@ -212,6 +222,7 @@
     mouse: {vx:0, vy:0, next:0, dir:1},
     fishPlaced: false,
     blinkUntil: 0, nextBlink: 2500,
+    brush: 'held', brushX: 0, brushY: 0,   // held | down
   };
   let W = 0, H = 0;
   const size = () => { const r = room.getBoundingClientRect(); W = r.width; H = r.height; };
@@ -279,11 +290,16 @@
     else if (S.state === 'loaf' || S.state === 'sit') S.energy = Math.min(100, S.energy + dt*0.5);
     S.happy = Math.max(0, S.happy - dt*0.25);
 
-    if (S.playing && S.toy) tickToy(dt, now);
+    if (S.state === 'putdown' || S.state === 'pickup') {
+      if (now > S.until) { const f = S.afterState; S.afterState = null; setState('sit', 0.4); f && f(); }
+    }
+    else if (S.playing && S.toy) tickToy(dt, now);
     else {
       if (S.state === 'walk') { if (step(dt, W*0.16)) { const f = S.afterWalk; S.afterWalk = null; f ? f() : chooseIdle(); } }
       else if (now > S.until) {
         if (S.state === 'sleep') { say('wake', true); setState('sit', 2); mood('peewee woke up'); }
+        else if (S.afterState) { const f = S.afterState; S.afterState = null; f(); }
+        else if (!S.playing && S.brush === 'down') pickUpBrush(chooseIdle);
         else chooseIdle();
       }
       if (S.state === 'sleep' && Math.random() < dt*0.25) say('nap');
@@ -293,7 +309,9 @@
     const fps = {walk:6, sleep:1, sit:1, loaf:1, groom:2.2, stalk:1, play:5, eat:4, happy:1}[S.state] || 2;
     const frames = F[S.state] || F.sit;
     if (S.frameT > 1/fps) { S.frameT = 0; S.frame = (S.frame + 1) % frames.length; }
-    const name = frames[S.frame % frames.length];
+    let name = frames[S.frame % frames.length];
+    if (S.brush === 'down' && S.state !== 'pickup' && HAS_NB.has(name)) name += '-nb';
+    if (S.state === 'putdown') name = 'rest';
     // blink every few seconds (sometimes twice); asleep = eyes closed
     if (now > S.nextBlink) { S.blinkUntil = now + 140; S.nextBlink = now + (Math.random() < .25 ? 320 : rnd(2200, 6000)); }
     const closed = S.state === 'sleep' || now < S.blinkUntil;
@@ -320,10 +338,31 @@
     Object.values(toyEls).forEach(e => e.classList.remove('on')); stringEl.classList.remove('on');
     document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('on'));
     shelf.classList.remove('on'); room.classList.remove('playing');
-    if (!quiet) { setState('sit', 2); mood('peewee is sitting'); say('ok. bye toys.', true); }
+    if (!quiet) { say('ok. bye toys.', true); pickUpBrush(() => { setState('sit', 2); mood('peewee is sitting'); }); }
+  }
+  function putDownBrush(then) {
+    if (S.brush !== 'held') { then(); return; }
+    S.toy = null;                      // nothing to chase until the brush is down
+    say('putdown', true); mood('peewee is putting his brush down');
+    setState('putdown', 1.3);
+    S.afterState = () => {
+      S.brush = 'down';
+      S.brushX = clamp(S.x + 30*S.dir, 40, W-40); S.brushY = S.y - 6;
+      brushEl.style.left = S.brushX+'px'; brushEl.style.top = S.brushY+'px'; brushEl.classList.add('on');
+      then();
+    };
+  }
+  function pickUpBrush(then) {
+    if (S.brush !== 'down') { then && then(); return; }
+    S.target = {x: S.brushX - 26, y: clamp(S.brushY + 4, floorTop(), floorY())}; setState('walk', 20); mood('peewee is fetching his brush');
+    S.afterWalk = () => {
+      setState('pickup', 1.1); say('pickup', true);
+      S.afterState = () => { S.brush = 'held'; brushEl.classList.remove('on'); then && then(); };
+    };
   }
   function selectToy(t) {
     if (S.state === 'sleep') return;
+    if (S.brush === 'held') { document.querySelectorAll('.tbtn').forEach(b => b.classList.toggle('on', b.dataset.toy === t)); hint.textContent = 'one moment — he is putting his brush down.'; putDownBrush(() => selectToy(t)); return; }
     S.toy = t; S.fishPlaced = false;
     Object.entries(toyEls).forEach(([k,e]) => e.classList.toggle('on', k === t && t !== 'fish'));
     document.querySelectorAll('.tbtn').forEach(b => b.classList.toggle('on', b.dataset.toy === t));
