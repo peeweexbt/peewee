@@ -89,18 +89,38 @@
   .toolbar input{font:inherit;font-size:13px;padding:8px 12px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);min-width:260px;outline:none}
   .toolbar input:focus{border-color:var(--accent-2)}
 
-  /* ── grid ───────────────────────────────── */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}
-  .card{background:var(--card);border-radius:var(--radius);padding:12px 12px 14px;box-shadow:var(--shadow);transition:transform .25s ease, box-shadow .25s ease;
-    animation:pop .5s ease both}
-  .card:nth-child(3n+1){transform:rotate(-.6deg)} .card:nth-child(3n+2){transform:rotate(.5deg)} .card:nth-child(3n){transform:rotate(-.3deg)}
-  .card:hover{transform:translateY(-4px) rotate(0);box-shadow:0 2px 3px rgba(60,50,30,.06),0 20px 40px -14px rgba(60,50,30,.35)}
-  .card .frame{aspect-ratio:1/1;border-radius:10px}
-  .card h4{font-size:15px;font-weight:600;line-height:1.25;margin:10px 0 2px}
-  .card .topic{font-size:10.5px}
-  .card p{font-size:13px;color:var(--ink-soft);margin:6px 0 8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .card .meta{font-size:11.5px}
+  /* ── grid: flat matted panels, mixed widths ───── */
+  .grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+  .card{grid-column:span 3;display:flex;flex-direction:column;background:var(--card);border:1.5px dashed #cfc9bb;border-radius:6px;overflow:hidden;
+    animation:pop .5s ease both;transition:border-color .25s ease}
+  .card:nth-child(6n+3),.card:nth-child(6n+6){grid-column:span 2}
+  .card:nth-child(6n+4),.card:nth-child(6n+5){grid-column:span 4}
+  .card:hover{border-color:var(--ink)}
+  .card .panel{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;padding:14%;cursor:zoom-in;
+    background:radial-gradient(ellipse at center,#fffefb 0%,var(--card) 55%,#f3efe5 100%)}
+  .card:nth-child(6n+4) .panel,.card:nth-child(6n+5) .panel{aspect-ratio:2/1;padding:6% 0}
+  .card:nth-child(6n+4) .frame,.card:nth-child(6n+5) .frame{width:38%;height:auto}
+  .card:nth-child(6n+3) .panel,.card:nth-child(6n+6) .panel{padding:16%}
+  .card .frame{width:100%;height:100%;max-width:100%;aspect-ratio:1/1;border-radius:2px;background:#eee;cursor:zoom-in;overflow:hidden;
+    box-shadow:0 0 0 5px #fff,0 0 0 6px #e6e1d5,0 14px 28px -14px rgba(60,50,30,.45);transition:transform .35s ease,box-shadow .35s ease}
+  .card .frame img{width:100%;height:100%;object-fit:cover;display:block}
+  .card:hover .frame{transform:translateY(-3px);box-shadow:0 0 0 5px #fff,0 0 0 6px var(--ink),0 22px 34px -16px rgba(60,50,30,.5)}
+  .card .cap{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 16px;background:#f1ede3;border-top:1.5px dashed #cfc9bb;
+    font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+  .card .cap b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card .cap span{color:var(--ink-soft);flex:none;font-variant-numeric:tabular-nums}
+  .card .cap .t{display:none}
   @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+  @media (max-width:900px){
+    .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .card,.card:nth-child(n){grid-column:span 1}
+    .card:nth-child(n) .panel{aspect-ratio:1/1;padding:12%}
+    .card:nth-child(n) .frame{width:100%}
+  }
+  @media (max-width:520px){
+    .grid{grid-template-columns:1fr}
+    .card .cap{font-size:11px;padding:10px 14px}
+  }
 
   .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:14px}
   .empty b{font-size:20px;font-weight:600;display:block;color:var(--ink);margin-bottom:6px}
@@ -303,14 +323,14 @@
   const render = q => {
     q = (q||'').toLowerCase().trim();
     const list = items.slice(1).filter(it => !q || [it.title, it.topic, it.mood, it.concept, it.tweet].join(' ').toLowerCase().includes(q));
-    grid.innerHTML = list.map(it => `
-      <article class="card" id="${esc(it.id)}">
-        <div class="frame" data-id="${esc(it.id)}"><img loading="lazy" src="${esc(it.thumb || it.image)}" alt="${esc(it.alt_text)}"></div>
-        <span class="topic">${esc(it.topic)}</span>
-        <h4>${esc(it.title)}</h4>
-        <p>${esc(it.concept)}</p>
-        <div class="meta"><span>${ago(it.ts)}</span>${swatches(it.palette)}</div>
-      </article>`).join('');
+    const total = items.length;
+    grid.innerHTML = list.map(it => {
+      const n = total - items.indexOf(it);            // oldest painting is 001
+      return `
+      <article class="card" id="${esc(it.id)}" title="${esc(it.topic)} — ${esc(ago(it.ts))}">
+        <div class="panel"><div class="frame" data-id="${esc(it.id)}"><img loading="lazy" src="${esc(it.thumb || it.image)}" alt="${esc(it.alt_text)}"></div></div>
+        <div class="cap"><b>${esc(it.title)}</b><span>${String(n).padStart(3,'0')}</span></div>
+      </article>`;}).join('');
   };
   render();
   $('#q').addEventListener('input', e => render(e.target.value));
