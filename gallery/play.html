@@ -54,14 +54,15 @@
   .sun{position:absolute;right:14%;top:12%;font-size:11px;color:var(--ink-soft);white-space:pre;line-height:1.1;pointer-events:none;opacity:.8}
 
   /* ── peewee ── */
-  .cat{position:absolute;left:0;top:0;transform:translate(-50%,-100%);white-space:pre;line-height:1.05;font-size:16px;font-weight:500;color:var(--ink);
-    cursor:pointer;z-index:3;padding:6px 8px 2px;margin:0}
-  .cat.flip .art{transform:scaleX(-1)}
-  .cat .art{display:block;transition:transform .12s}
-  .cat.bob .art{animation:bob .32s steps(2,end) infinite}
-  @keyframes bob{0%{translate:0 0}50%{translate:0 -2px}100%{translate:0 0}}
-  .shadow{position:absolute;left:50%;bottom:-2px;width:70%;height:6px;transform:translateX(-50%);border-radius:50%;border-bottom:1.5px dashed rgba(58,56,53,.35)}
-  @media (max-width:640px){.cat{font-size:11px}}
+  .cat{position:absolute;left:0;top:0;transform:translate(-50%,-100%);height:24%;cursor:pointer;z-index:3;margin:0;padding:0 0 4px}
+  .cat img{display:block;height:100%;width:auto;pointer-events:none;image-rendering:auto;transition:transform .12s}
+  .cat.flip img{transform:scaleX(-1)}
+  .cat.crouch img{transform:scaleY(.86) translateY(8%)}
+  .cat.flip.crouch img{transform:scaleX(-1) scaleY(.86) translateY(8%)}
+  .cat.bob img{animation:bob .36s steps(2,end) infinite}
+  @keyframes bob{0%{translate:0 0}50%{translate:0 -3px}100%{translate:0 0}}
+  .shadow{position:absolute;left:50%;bottom:0;width:70%;height:6px;transform:translateX(-50%);border-radius:50%;border-bottom:1.5px dashed rgba(58,56,53,.35)}
+  @media (max-width:640px){.cat{height:20%}}
 
   /* ── bubble ── */
   .bubble{position:absolute;transform:translate(-50%,-100%);background:var(--card);border:1.5px dashed var(--ink);border-radius:6px;padding:4px 9px;font-size:12px;
@@ -111,7 +112,7 @@
   .note b{font-weight:500;color:var(--ink)}
   footer{margin-top:40px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7}
   footer .paw{font-size:14px;color:var(--ink);margin-bottom:6px;letter-spacing:.1em}
-  @media (prefers-reduced-motion: reduce){.cat.bob .art{animation:none}}
+  @media (prefers-reduced-motion: reduce){.cat.bob img{animation:none}}
 </style>
 </head>
 <body>
@@ -142,7 +143,7 @@
     <div class="toy mouse" id="toy-mouse"></div>
     <div class="toy fish" id="toy-fish"></div>
     <div class="bubble" id="bubble"></div>
-    <pre class="cat" id="cat"><span class="art" id="art"></span><i class="shadow"></i></pre>
+    <div class="cat" id="cat"><img id="art" src="assets/play/sit.png" alt="Peewee"><i class="shadow"></i></div>
   </div>
 
   <div class="shelf" id="shelf">
@@ -177,102 +178,15 @@
   const pick = a => a[Math.floor(Math.random()*a.length)];
   const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 
-  // ── ascii frames (facing right) ────────────────────────────
+  // ── sprite frames (assets/play/*.png; walk frames face right) ──────
+  const FR = 'assets/play/';
   const F = {
-    sit: [
-`          .-.-.
-   .-.   : o o:
-  :  '-.-'  w '
-  :         :
-  '.__.'.__.'`,
-`          .-.-.
-   .-.   : - -:
-  :  '-.-'  w '
-  :         :
-  '.__.'.__.'`],
-    walk: [
-`          .-.-.
-    .-.-.: o o:
-  .'        w '
-  :  :    :  :
-  '-'      '-'`,
-`          .-.-.
-   .-.-. : o o:
-  '         w '
-   : :    : :
-  -'-'    '-'-`],
-    loaf: [
-`          .-.-.
-   .-.-.-: - -:
-  :         w '
-  '-.-.-.-.-.'`,
-`          .-.-.
-   .-.-.-: . .:
-  :         w '
-  '-.-.-.-.-.'`],
-    sleep: [
-`            z
-   .-.-.-.-. Z
-  :   - -   :
-  '-.-.w.-.-'`,
-`             Z
-   .-.-.-.-.z
-  :   - -   :
-  '-.-.w.-.-'`],
-    groom: [
-`          .-.-.
-   .-.   : o o:
-  :  '-.-'  w/
-  :       :|
-  '.__.'.-'`,
-`          .-.-.
-   .-.   : - -:
-  :  '-.-'  w/
-  :       :|
-  '.__.'.-'`],
-    stalk: [
-`   .-.-.
-  : > <:.-.-.-.
-   '-w'       :
-  :':       :':`,
-`   .-.-.
-  : > <:.-.-.-.
-   '-w'       :
-   :':     :':`],
-    play: [
-`          .-.-.
-   .-.   : ^ ^:  __
-  :  '-.-'  w '--'
-  :         :
-  '.__.'.__.'`,
-`          .-.-.
-   .-.   : o o:
-  :  '-.-'  w '--.
-  :         :    '
-  '.__.'.__.'`],
-    eat: [
-`          .-.-.
-   .-.   : - -:
-  :  '-.-'  w :
-  :         :
-  '.__.'.__.'`,
-`          .-.-.
-   .-.   : - -:
-  :  '-.-' .w.:
-  :         :
-  '.__.'.__.'`],
-    happy: [
-`          .-.-.
-   .-.   : ^ ^:
-  :  '-.-'  w '
-  :         :
-  '.__.'.__.'`,
-`          .-.-.
-    .-.  : ^ ^:
-   '  '-.-' w '
-  :         :
-  '.__.'.__.'`],
+    sit: ['sit'], walk: ['walk1','walk2','walk3','walk4'], loaf: ['rest'], sleep: ['rest'],
+    groom: ['rest','bat'], stalk: ['walk1'], play: ['bat','surprised'], eat: ['surprised','sit'], happy: ['surprised'],
   };
+  const ALL = ['sit','surprised','rest','bat','walk1','walk2','walk3','walk4'];
+  ALL.forEach(n => { new Image().src = FR+n+'.png'; new Image().src = FR+n+'-blink.png'; });
+  const SIDE = new Set(['walk1','walk2','walk3','walk4']);   // only these flip with direction
 
   const SAY = {
     hi: ['mrrp?', 'oh. hi.', 'you found me', 'i was busy being a cat', 'mrrp!', 'hello, stranger'],
@@ -297,6 +211,7 @@
     pointer: null, lastCatch: 0, lastBubble: 0, playing: false,
     mouse: {vx:0, vy:0, next:0, dir:1},
     fishPlaced: false,
+    blinkUntil: 0, nextBlink: 2500,
   };
   let W = 0, H = 0;
   const size = () => { const r = room.getBoundingClientRect(); W = r.width; H = r.height; };
@@ -358,8 +273,6 @@
   function loop(now) {
     const dt = Math.min(0.05, (now - last)/1000); last = now;
     S.frameT += dt;
-    const fps = {walk:8, sleep:1.1, sit:0.5, loaf:0.4, groom:3, stalk:2.5, play:6, eat:5, happy:3}[S.state] || 2;
-    if (S.frameT > 1/fps) { S.frameT = 0; S.frame ^= 1; }
 
     // slow drift of stats
     if (S.state === 'sleep') S.energy = Math.min(100, S.energy + dt*2.6);
@@ -377,11 +290,19 @@
     }
 
     // render cat
+    const fps = {walk:6, sleep:1, sit:1, loaf:1, groom:2.2, stalk:1, play:5, eat:4, happy:1}[S.state] || 2;
     const frames = F[S.state] || F.sit;
-    art.textContent = frames[S.frame % frames.length];
+    if (S.frameT > 1/fps) { S.frameT = 0; S.frame = (S.frame + 1) % frames.length; }
+    const name = frames[S.frame % frames.length];
+    // blink every few seconds (sometimes twice); asleep = eyes closed
+    if (now > S.nextBlink) { S.blinkUntil = now + 140; S.nextBlink = now + (Math.random() < .25 ? 320 : rnd(2200, 6000)); }
+    const closed = S.state === 'sleep' || now < S.blinkUntil;
+    const src = FR + name + (closed ? '-blink' : '') + '.png';
+    if (art.getAttribute('src') !== src) art.setAttribute('src', src);
     catEl.style.left = S.x+'px'; catEl.style.top = S.y+'px';
-    catEl.classList.toggle('flip', S.dir < 0);
+    catEl.classList.toggle('flip', SIDE.has(name) && S.dir < 0);
     catEl.classList.toggle('bob', S.state === 'walk');
+    catEl.classList.toggle('crouch', S.state === 'stalk');
     bubbleEl.style.left = S.x+'px'; bubbleEl.style.top = (S.y - catEl.offsetHeight - 6)+'px';
     bars();
     requestAnimationFrame(loop);
