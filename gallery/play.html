@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Play with Peewee</title>
+<meta name="description" content="Peewee's playroom — tap the cat, pick a toy, and see what he does.">
+<link rel="icon" href="assets/peewee-avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf8f2; --ink:#3a3835; --ink-soft:#6f6b64; --line:#e3ded2;
+    --card:#fffdf8; --accent:#e5905f; --accent-2:#8fb3d9; --nose:#f39a8f;
+    --shadow: 0 1px 2px rgba(60,50,30,.06), 0 10px 30px -12px rgba(60,50,30,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14.5px;color:var(--ink);background:var(--paper);line-height:1.5;min-height:100vh;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+  a{color:inherit}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 18px 60px}
+
+  /* ── header ── */
+  .top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .top h1{margin:0;font-size:20px;font-weight:600}
+  .top h1:before{content:"// ";color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:4px;background:transparent;color:var(--ink);border:1.5px dashed var(--ink);text-decoration:none;font:inherit;font-size:13px;cursor:pointer}
+  .btn:before{content:"[ "}.btn:after{content:" ]"}
+  .btn.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn:disabled{opacity:.4;cursor:default}
+
+  /* ── stats ── */
+  .stats{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-soft);margin-bottom:12px}
+  .stats b{font-weight:500;color:var(--ink)}
+  .bar{font-variant-ligatures:none;letter-spacing:.02em}
+  .bar i{font-style:normal;color:var(--accent)}
+  .stats .mood{color:var(--ink)}
+
+  /* ── room ── */
+  .room{position:relative;width:100%;aspect-ratio:16/10;background:var(--card);border:2px dashed var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);
+    overflow:hidden;touch-action:none;cursor:default;
+    background-image:radial-gradient(rgba(58,56,53,.12) 1px, transparent 1.2px);background-size:22px 22px;background-position:11px 11px}
+  .room.playing{cursor:none}
+  @media (max-width:640px){.room{aspect-ratio:4/5}}
+  .furn{position:absolute;background-size:contain;background-repeat:no-repeat;background-position:center bottom;pointer-events:none;opacity:.9}
+  .bed{background-image:url(assets/sprites/bed.png);width:18%;left:3%;bottom:6%;aspect-ratio:320/180}
+  .post{background-image:url(assets/sprites/post.png);width:7.5%;right:5%;bottom:8%;aspect-ratio:192/320}
+  .bowl{background-image:url(assets/sprites/bowl.png);width:11%;right:20%;bottom:5%;aspect-ratio:320/180}
+  .rug{position:absolute;left:32%;right:36%;bottom:14%;height:20%;border:1.5px dashed rgba(58,56,53,.35);border-radius:50%;pointer-events:none}
+  .window{position:absolute;left:44%;top:9%;width:20%;aspect-ratio:1/1;border:1.5px dashed rgba(58,56,53,.4);border-radius:4px;pointer-events:none}
+  .window:before,.window:after{content:"";position:absolute;background:rgba(58,56,53,.25)}
+  .window:before{left:50%;top:0;bottom:0;width:1px}.window:after{top:50%;left:0;right:0;height:1px}
+  .sun{position:absolute;right:14%;top:12%;font-size:11px;color:var(--ink-soft);white-space:pre;line-height:1.1;pointer-events:none;opacity:.8}
+
+  /* ── peewee ── */
+  .cat{position:absolute;left:0;top:0;transform:translate(-50%,-100%);white-space:pre;line-height:1.05;font-size:16px;font-weight:500;color:var(--ink);
+    cursor:pointer;z-index:3;padding:6px 8px 2px;margin:0}
+  .cat.flip .art{transform:scaleX(-1)}
+  .cat .art{display:block;transition:transform .12s}
+  .cat.bob .art{animation:bob .32s steps(2,end) infinite}
+  @keyframes bob{0%{translate:0 0}50%{translate:0 -2px}100%{translate:0 0}}
+  .shadow{position:absolute;left:50%;bottom:-2px;width:70%;height:6px;transform:translateX(-50%);border-radius:50%;border-bottom:1.5px dashed rgba(58,56,53,.35)}
+  @media (max-width:640px){.cat{font-size:11px}}
+
+  /* ── bubble ── */
+  .bubble{position:absolute;transform:translate(-50%,-100%);background:var(--card);border:1.5px dashed var(--ink);border-radius:6px;padding:4px 9px;font-size:12px;
+    white-space:nowrap;z-index:4;pointer-events:none;opacity:0;transition:opacity .2s}
+  .bubble.on{opacity:1}
+  .bubble:after{content:"";position:absolute;left:50%;bottom:-6px;width:8px;height:8px;background:var(--card);border-right:1.5px dashed var(--ink);border-bottom:1.5px dashed var(--ink);transform:translateX(-50%) rotate(45deg)}
+
+  /* ── toys ── */
+  .toy{position:absolute;transform:translate(-50%,-50%);background-size:contain;background-repeat:no-repeat;background-position:center;pointer-events:none;z-index:2;display:none}
+  .toy.on{display:block}
+  .toy.yarn{background-image:url(assets/sprites/yarn.png);width:52px;height:36px}
+  .toy.feather{background-image:url(assets/sprites/feather.png);width:34px;height:44px;transform-origin:20% 90%}
+  .toy.mouse{background-image:url(assets/sprites/mouse.png);width:48px;height:30px}
+  .toy.fish{background-image:url(assets/sprites/fish.png);width:52px;height:24px}
+  .toy.flip{transform:translate(-50%,-50%) scaleX(-1)}
+  .string{position:absolute;left:0;top:0;height:1.5px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px);transform-origin:0 50%;z-index:1;display:none}
+  .string.on{display:block}
+  .fx{position:absolute;transform:translate(-50%,-50%);font-size:13px;color:var(--accent);pointer-events:none;z-index:5;animation:rise 1s ease-out forwards;white-space:pre}
+  @keyframes rise{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -34px}}
+
+  /* ── toy shelf ── */
+  .shelf{margin-top:16px;border:1.5px dashed #cfc9bb;border-radius:6px;background:var(--card);padding:12px 14px;display:none}
+  .shelf.on{display:block;animation:pop .25s ease both}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .shelf h3{margin:0 0 8px;font-size:13px;font-weight:600}
+  .shelf h3:before{content:"// ";color:var(--accent)}
+  .shelf .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .tbtn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px 6px;border:1.5px dashed #cfc9bb;border-radius:6px;background:transparent;font:inherit;font-size:12px;color:var(--ink);cursor:pointer;min-width:86px}
+  .tbtn i{display:block;width:46px;height:46px;background-size:contain;background-repeat:no-repeat;background-position:center}
+  .tbtn.on{border-color:var(--accent);border-style:solid;background:#fff}
+  .tbtn:hover{border-color:var(--ink)}
+  .tbtn .yarn{background-image:url(assets/sprites/yarn.png)}.tbtn .feather{background-image:url(assets/sprites/feather.png)}
+  .tbtn .mouse{background-image:url(assets/sprites/mouse.png)}.tbtn .fish{background-image:url(assets/sprites/fish.png)}
+  .hint{font-size:12px;color:var(--ink-soft);margin:8px 0 0;min-height:1.5em}
+  .shelf .row .btn{margin-left:auto}
+
+  @media (max-width:640px){
+    .shelf.on{position:fixed;left:8px;right:8px;bottom:8px;z-index:20;box-shadow:var(--shadow);padding:10px 12px}
+    .shelf h3{display:none}
+    .tbtn{min-width:0;flex:1;padding:6px 4px 4px;font-size:11px}
+    .tbtn i{width:34px;height:34px}
+    .shelf .row{gap:6px}
+    .shelf .row .btn{margin-left:0;flex-basis:100%;justify-content:center;padding:6px}
+    .hint{margin-top:6px;font-size:11px}
+  }
+  .note{margin-top:22px;font-size:12.5px;color:var(--ink-soft);line-height:1.7}
+  .note b{font-weight:500;color:var(--ink)}
+  footer{margin-top:40px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7}
+  footer .paw{font-size:14px;color:var(--ink);margin-bottom:6px;letter-spacing:.1em}
+  @media (prefers-reduced-motion: reduce){.cat.bob .art{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>peewee's playroom</h1>
+    <a class="btn" href="index.html">back to the gallery</a>
+  </div>
+
+  <div class="stats">
+    <span>energy <b class="bar" id="energyBar"></b></span>
+    <span>happiness <b class="bar" id="happyBar"></b></span>
+    <span class="mood" id="moodText">peewee is wandering</span>
+  </div>
+
+  <div class="room" id="room">
+    <div class="window"></div>
+    <div class="sun">  \ | /
+ -- o --
+  / | \</div>
+    <div class="rug"></div>
+    <div class="furn bed" id="bed"></div>
+    <div class="furn bowl" id="bowl"></div>
+    <div class="furn post" id="post"></div>
+    <div class="string" id="string"></div>
+    <div class="toy yarn" id="toy-yarn"></div>
+    <div class="toy feather" id="toy-feather"></div>
+    <div class="toy mouse" id="toy-mouse"></div>
+    <div class="toy fish" id="toy-fish"></div>
+    <div class="bubble" id="bubble"></div>
+    <pre class="cat" id="cat"><span class="art" id="art"></span><i class="shadow"></i></pre>
+  </div>
+
+  <div class="shelf" id="shelf">
+    <h3>toy box</h3>
+    <div class="row">
+      <button class="tbtn" data-toy="feather"><i class="feather"></i>feather</button>
+      <button class="tbtn" data-toy="yarn"><i class="yarn"></i>yarn</button>
+      <button class="tbtn" data-toy="mouse"><i class="mouse"></i>mouse</button>
+      <button class="tbtn" data-toy="fish"><i class="fish"></i>fish</button>
+      <button class="btn" id="stopBtn">put toys away</button>
+    </div>
+    <p class="hint" id="hint">pick a toy.</p>
+  </div>
+
+  <p class="note"><b>how it works:</b> peewee does his own thing — wanders, sits in the sun, grooms, naps in his bed. tap him to say hi and open the toy box.
+    the feather follows your finger; tap the floor to toss the yarn; the mouse runs on its own and he'll stalk it; the fish is a snack that brings his energy back.
+    when he's tired he'll put himself to bed. be patient with him, he's a small cat.</p>
+
+  <footer>
+    <div class="paw">-- peewee --</div>
+    every pounce here was learned from twelve years of watching my owner make art. mrrp.
+  </footer>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const room = $('#room'), catEl = $('#cat'), art = $('#art'), bubbleEl = $('#bubble');
+  const shelf = $('#shelf'), hint = $('#hint'), stringEl = $('#string');
+  const toyEls = {yarn:$('#toy-yarn'), feather:$('#toy-feather'), mouse:$('#toy-mouse'), fish:$('#toy-fish')};
+  const rnd = (a,b) => a + Math.random()*(b-a);
+  const pick = a => a[Math.floor(Math.random()*a.length)];
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+  // ── ascii frames (facing right) ────────────────────────────
+  const F = {
+    sit: [
+`          .-.-.
+   .-.   : o o:
+  :  '-.-'  w '
+  :         :
+  '.__.'.__.'`,
+`          .-.-.
+   .-.   : - -:
+  :  '-.-'  w '
+  :         :
+  '.__.'.__.'`],
+    walk: [
+`          .-.-.
+    .-.-.: o o:
+  .'        w '
+  :  :    :  :
+  '-'      '-'`,
+`          .-.-.
+   .-.-. : o o:
+  '         w '
+   : :    : :
+  -'-'    '-'-`],
+    loaf: [
+`          .-.-.
+   .-.-.-: - -:
+  :         w '
+  '-.-.-.-.-.'`,
+`          .-.-.
+   .-.-.-: . .:
+  :         w '
+  '-.-.-.-.-.'`],
+    sleep: [
+`            z
+   .-.-.-.-. Z
+  :   - -   :
+  '-.-.w.-.-'`,
+`             Z
+   .-.-.-.-.z
+  :   - -   :
+  '-.-.w.-.-'`],
+    groom: [
+`          .-.-.
+   .-.   : o o:
+  :  '-.-'  w/
+  :       :|
+  '.__.'.-'`,
+`          .-.-.
+   .-.   : - -:
+  :  '-.-'  w/
+  :       :|
+  '.__.'.-'`],
+    stalk: [
+`   .-.-.
+  : > <:.-.-.-.
+   '-w'       :
+  :':       :':`,
+`   .-.-.
+  : > <:.-.-.-.
+   '-w'       :
+   :':     :':`],
+    play: [
+`          .-.-.
+   .-.   : ^ ^:  __
+  :  '-.-'  w '--'
+  :         :
+  '.__.'.__.'`,
+`          .-.-.
+   .-.   : o o:
+  :  '-.-'  w '--.
+  :         :    '
+  '.__.'.__.'`],
+    eat: [
+`          .-.-.
+   .-.   : - -:
+  :  '-.-'  w :
+  :         :
+  '.__.'.__.'`,
+`          .-.-.
+   .-.   : - -:
+  :  '-.-' .w.:
+  :         :
+  '.__.'.__.'`],
+    happy: [
+`          .-.-.
+   .-.   : ^ ^:
+  :  '-.-'  w '
+  :         :
+  '.__.'.__.'`,
+`          .-.-.
+    .-.  : ^ ^:
+   '  '-.-' w '
+  :         :
+  '.__.'.__.'`],
+  };
+
+  const SAY = {
+    hi: ['mrrp?', 'oh. hi.', 'you found me', 'i was busy being a cat', 'mrrp!', 'hello, stranger'],
+    idle: ['...', '*tail flick*', 'thinking about brushstrokes', 'the light is good here', 'mrrp', 'i could paint that window', 'quiet hours'],
+    groom: ['*lick*', 'paint on my paw again', 'an artist must be tidy'],
+    nap: ['zzz', 'z z z', 'dreaming in oils'],
+    wake: ['*stretch*', 'mrrp. what time is it', 'ok. i am awake. mostly.'],
+    catch: ['GOT IT', 'pounce!!', 'mrrp!!', 'mine now', 'ha!', 'did you see that'],
+    miss: ['hm.', 'it moved', 'i meant to do that', 'again. again.'],
+    eat: ['*crunch*', 'fish!!', 'thank you. mrrp.', 'snack o clock'],
+    tired: ['ok i am tired now', 'bed. bed bed bed.', 'that was a lot of pouncing'],
+    pet: ['*purr*', 'purrrr', 'ok. yes. there.', 'more', '*head bonk*'],
+    bored: ['are you going to throw it', 'i am waiting', 'well?'],
+  };
+
+  // ── state ─────────────────────────────────────────────────
+  const S = {
+    x: 0, y: 0, dir: 1, frame: 0, frameT: 0,
+    state: 'sit', until: 0, target: null,
+    energy: 82, happy: 40,
+    toy: null, toyX: 0, toyY: 0, toyVX: 0, toyVY: 0,
+    pointer: null, lastCatch: 0, lastBubble: 0, playing: false,
+    mouse: {vx:0, vy:0, next:0, dir:1},
+    fishPlaced: false,
+  };
+  let W = 0, H = 0;
+  const size = () => { const r = room.getBoundingClientRect(); W = r.width; H = r.height; };
+  const floorY = () => H*0.86, floorTop = () => H*0.48;
+  const spot = (id) => { const r = $(id).getBoundingClientRect(), rr = room.getBoundingClientRect(); return {x: r.left - rr.left + r.width/2, y: r.bottom - rr.top - r.height*0.18}; };
+
+  size(); addEventListener('resize', size);
+  S.x = W*0.55; S.y = floorY();
+
+  // ── helpers ───────────────────────────────────────────────
+  function say(kind, force) {
+    const now = performance.now();
+    if (!force && now - S.lastBubble < 2600) return;
+    S.lastBubble = now;
+    bubbleEl.textContent = typeof kind === 'string' && SAY[kind] ? pick(SAY[kind]) : kind;
+    bubbleEl.classList.add('on');
+    clearTimeout(say.t); say.t = setTimeout(() => bubbleEl.classList.remove('on'), 1900);
+  }
+  function fx(x, y, txt) {
+    const e = document.createElement('span'); e.className = 'fx'; e.textContent = txt;
+    e.style.left = x+'px'; e.style.top = y+'px'; room.appendChild(e); setTimeout(() => e.remove(), 1000);
+  }
+  function hearts(n=3){ for (let i=0;i<n;i++) setTimeout(() => fx(S.x + rnd(-30,30), S.y - rnd(40,70), pick(['<3','♥','<3 ','*'])), i*160); }
+  function setState(s, dur) { S.state = s; S.until = performance.now() + (dur||0)*1000; S.frame = 0; }
+  function dist(ax, ay, bx, by) { return Math.hypot(ax-bx, ay-by); }
+  function bars() {
+    const bar = v => { const n = Math.round(clamp(v,0,100)/10); return '[' + '<i>' + '#'.repeat(n) + '</i>' + '.'.repeat(10-n) + ']'; };
+    $('#energyBar').innerHTML = bar(S.energy); $('#happyBar').innerHTML = bar(S.happy);
+  }
+  function mood(t) { $('#moodText').textContent = t; }
+  function randomFloorPoint() { return {x: rnd(W*0.12, W*0.88), y: rnd(floorTop()+H*0.12, floorY())}; }
+
+  // ── behaviours ────────────────────────────────────────────
+  function chooseIdle() {
+    if (S.energy < 12) return goToBed();
+    const r = Math.random();
+    if (r < 0.42) { S.target = randomFloorPoint(); setState('walk', 20); mood('peewee is wandering'); }
+    else if (r < 0.62) { setState('sit', rnd(2.5, 5)); mood('peewee is sitting'); if (Math.random()<.5) say('idle'); }
+    else if (r < 0.78) { setState('groom', rnd(2.5, 4)); mood('peewee is grooming'); if (Math.random()<.6) say('groom'); }
+    else if (r < 0.9) { setState('loaf', rnd(4, 7)); mood('peewee is a loaf'); }
+    else { const p = spot('#bowl'); S.target = {x: p.x - 30, y: p.y}; setState('walk', 20); S.afterWalk = () => { setState('eat', 2.2); mood('peewee is checking the bowl'); say('*sniff*. empty.', true); }; }
+  }
+  function goToBed() {
+    const p = spot('#bed'); S.target = {x: p.x, y: p.y}; setState('walk', 20); mood('peewee is heading to bed');
+    say('tired', true);
+    S.afterWalk = () => { setState('sleep', rnd(28, 40)); mood('peewee is napping. shh.'); stopPlay(true); };
+  }
+  function step(dt, speed) {
+    if (!S.target) return true;
+    const dx = S.target.x - S.x, dy = S.target.y - S.y, d = Math.hypot(dx, dy);
+    if (d < 4) { S.target = null; return true; }
+    const v = Math.min(d, speed*dt);
+    S.x += dx/d*v; S.y += dy/d*v; S.dir = dx < 0 ? -1 : 1;
+    return false;
+  }
+
+  // ── main loop ─────────────────────────────────────────────
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last)/1000); last = now;
+    S.frameT += dt;
+    const fps = {walk:8, sleep:1.1, sit:0.5, loaf:0.4, groom:3, stalk:2.5, play:6, eat:5, happy:3}[S.state] || 2;
+    if (S.frameT > 1/fps) { S.frameT = 0; S.frame ^= 1; }
+
+    // slow drift of stats
+    if (S.state === 'sleep') S.energy = Math.min(100, S.energy + dt*2.6);
+    else if (S.state === 'loaf' || S.state === 'sit') S.energy = Math.min(100, S.energy + dt*0.5);
+    S.happy = Math.max(0, S.happy - dt*0.25);
+
+    if (S.playing && S.toy) tickToy(dt, now);
+    else {
+      if (S.state === 'walk') { if (step(dt, W*0.16)) { const f = S.afterWalk; S.afterWalk = null; f ? f() : chooseIdle(); } }
+      else if (now > S.until) {
+        if (S.state === 'sleep') { say('wake', true); setState('sit', 2); mood('peewee woke up'); }
+        else chooseIdle();
+      }
+      if (S.state === 'sleep' && Math.random() < dt*0.25) say('nap');
+    }
+
+    // render cat
+    const frames = F[S.state] || F.sit;
+    art.textContent = frames[S.frame % frames.length];
+    catEl.style.left = S.x+'px'; catEl.style.top = S.y+'px';
+    catEl.classList.toggle('flip', S.dir < 0);
+    catEl.classList.toggle('bob', S.state === 'walk');
+    bubbleEl.style.left = S.x+'px'; bubbleEl.style.top = (S.y - catEl.offsetHeight - 6)+'px';
+    bars();
+    requestAnimationFrame(loop);
+  }
+
+  // ── toys ──────────────────────────────────────────────────
+  function startPlay() {
+    if (S.state === 'sleep') { say('zzz', true); return; }
+    S.playing = true; shelf.classList.add('on'); room.classList.add('playing');
+    hint.textContent = 'pick a toy.';
+    if (innerWidth > 640) shelf.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function stopPlay(quiet) {
+    S.playing = false; S.toy = null; S.fishPlaced = false;
+    Object.values(toyEls).forEach(e => e.classList.remove('on')); stringEl.classList.remove('on');
+    document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('on'));
+    shelf.classList.remove('on'); room.classList.remove('playing');
+    if (!quiet) { setState('sit', 2); mood('peewee is sitting'); say('ok. bye toys.', true); }
+  }
+  function selectToy(t) {
+    if (S.state === 'sleep') return;
+    S.toy = t; S.fishPlaced = false;
+    Object.entries(toyEls).forEach(([k,e]) => e.classList.toggle('on', k === t && t !== 'fish'));
+    document.querySelectorAll('.tbtn').forEach(b => b.classList.toggle('on', b.dataset.toy === t));
+    stringEl.classList.toggle('on', t === 'feather');
+    S.toyX = S.pointer ? S.pointer.x : W*0.5; S.toyY = S.pointer ? S.pointer.y : floorTop()+H*0.2; S.toyVX = S.toyVY = 0;
+    if (t === 'yarn') { S.toyY = floorY() - 10; S.toyX = W*0.3; }
+    if (t === 'mouse') { const p = randomFloorPoint(); S.toyX = p.x; S.toyY = p.y; S.mouse.next = 0; }
+    hint.textContent = {
+      feather: 'move your finger (or mouse) around the room. peewee will follow it.',
+      yarn: 'tap or drag on the floor to toss the yarn. he will chase it and bat it back.',
+      mouse: 'the mouse runs by itself. peewee will stalk it. tap to startle the mouse.',
+      fish: 'tap the floor to put down a fish. he will come and eat it.',
+    }[t];
+    mood('peewee is playing with the ' + t); setState('sit', 0.3);
+    say(pick(['ooh', '!!', 'mrrp!', 'what is that']), true);
+  }
+
+  function tickToy(dt, now) {
+    const t = S.toy, el = toyEls[t];
+    const drain = {feather:1.6, yarn:1.3, mouse:1.9, fish:0}[t];
+    if (S.state !== 'sit' && S.state !== 'happy') S.energy -= dt*drain;
+    if (S.energy <= 0) { S.energy = 0; goToBed(); return; }
+
+    if (t === 'feather') {
+      if (S.pointer) {
+        // feather lags the pointer a bit and dangles
+        S.toyX += (S.pointer.x - S.toyX)*Math.min(1, dt*9); S.toyY += (S.pointer.y - S.toyY)*Math.min(1, dt*9);
+        const sway = Math.sin(now/180)*8;
+        el.style.transform = `translate(-50%,-50%) rotate(${sway + (S.pointer.x - S.toyX)*-1.2}deg)`;
+        // string from top-left corner of room-ish to feather
+        const ox = S.pointer.x, oy = 0;
+        const len = dist(ox, oy, S.toyX, S.toyY - 18), ang = Math.atan2(S.toyY - 18 - oy, S.toyX - ox);
+        stringEl.style.left = ox+'px'; stringEl.style.top = oy+'px'; stringEl.style.width = len+'px'; stringEl.style.transform = `rotate(${ang}rad)`;
+      }
+      const d = dist(S.x, S.y - 20, S.toyX, S.toyY);
+      const onFloor = S.toyY > floorTop() - 20;
+      if (d > 70) { S.target = {x: S.toyX, y: clamp(S.toyY + 26, floorTop(), floorY())}; step(dt, W*0.28); setState('walk'); }
+      else if (d > 34) { S.target = {x: S.toyX, y: clamp(S.toyY + 26, floorTop(), floorY())}; step(dt, W*0.12); if (S.state !== 'stalk') setState('stalk'); S.dir = S.toyX < S.x ? -1 : 1; }
+      else {
+        if (S.state !== 'play') setState('play');
+        if (now - S.lastCatch > 900 && Math.random() < dt*3.5) {
+          S.lastCatch = now; const hit = Math.random() < (onFloor ? 0.7 : 0.45);
+          if (hit) { S.happy = Math.min(100, S.happy + 6); say('catch'); fx(S.toyX, S.toyY - 10, pick(['*bap*','!','*swat*'])); el.style.transform = `translate(-50%,-50%) rotate(${rnd(-60,60)}deg)`; }
+          else { say('miss'); fx(S.toyX, S.toyY - 10, '~'); }
+        }
+      }
+    }
+
+    if (t === 'yarn') {
+      // rolling physics
+      S.toyX += S.toyVX*dt; S.toyY += S.toyVY*dt;
+      S.toyVX *= Math.pow(0.15, dt); S.toyVY *= Math.pow(0.15, dt);
+      if (S.toyX < 20 || S.toyX > W-20) { S.toyVX *= -0.6; S.toyX = clamp(S.toyX, 20, W-20); }
+      if (S.toyY < floorTop() || S.toyY > floorY()) { S.toyVY *= -0.6; S.toyY = clamp(S.toyY, floorTop(), floorY()); }
+      const moving = Math.hypot(S.toyVX, S.toyVY) > 12;
+      el.style.transform = `translate(-50%,-50%) rotate(${(S.toyX*2.2)%360}deg)`;
+      const d = dist(S.x, S.y - 10, S.toyX, S.toyY);
+      if (moving || d > 44) {
+        S.target = {x: S.toyX, y: clamp(S.toyY + 8, floorTop(), floorY())};
+        const arrived = step(dt, moving ? W*0.3 : W*0.18); if (S.state !== 'walk') setState('walk');
+        if (arrived && !moving) setState('sit', 0.4);
+      } else {
+        if (S.state !== 'play') { setState('play'); S.dir = S.toyX < S.x ? -1 : 1; }
+        if (now - S.lastCatch > 700 && Math.random() < dt*2.8) {
+          S.lastCatch = now;
+          const ang = rnd(0, Math.PI*2), p = rnd(W*0.35, W*0.7);
+          S.toyVX = Math.cos(ang)*p; S.toyVY = Math.sin(ang)*p*0.5;
+          S.happy = Math.min(100, S.happy + 4); fx(S.toyX, S.toyY - 14, pick(['*bap*','*whap*','!'])); if (Math.random()<.4) say('catch');
+        }
+        if (now - S.lastCatch > 5000 && Math.random() < dt*0.3) say('bored');
+      }
+    }
+
+    if (t === 'mouse') {
+      const m = S.mouse;
+      if (now > m.next) {
+        if (Math.random() < 0.55) { const a = rnd(0, Math.PI*2), sp = rnd(W*0.25, W*0.5); m.vx = Math.cos(a)*sp; m.vy = Math.sin(a)*sp*0.45; m.next = now + rnd(300, 900); }
+        else { m.vx = m.vy = 0; m.next = now + rnd(600, 1800); }
+      }
+      // flee if cat close
+      const dc = dist(S.x, S.y - 10, S.toyX, S.toyY);
+      if (dc < 60 && Math.random() < dt*6) { const a = Math.atan2(S.toyY - (S.y-10), S.toyX - S.x); const sp = W*0.55; m.vx = Math.cos(a)*sp; m.vy = Math.sin(a)*sp*0.45; m.next = now + 500; }
+      S.toyX = clamp(S.toyX + m.vx*dt, 24, W-24); S.toyY = clamp(S.toyY + m.vy*dt, floorTop(), floorY());
+      if (S.toyX <= 24 || S.toyX >= W-24) m.vx *= -1; if (S.toyY <= floorTop() || S.toyY >= floorY()) m.vy *= -1;
+      if (m.vx) m.dir = m.vx < 0 ? -1 : 1;
+      el.classList.toggle('flip', m.dir > 0);
+      const mouseMoving = Math.hypot(m.vx, m.vy) > 5;
+      if (dc > 120) { S.target = {x: S.toyX, y: S.toyY}; step(dt, W*0.22); if (S.state !== 'walk') setState('walk'); }
+      else if (dc > 46) { S.target = {x: S.toyX, y: S.toyY}; step(dt, mouseMoving ? W*0.3 : W*0.07); if (S.state !== 'stalk') setState('stalk'); S.dir = S.toyX < S.x ? -1 : 1; }
+      else {
+        if (S.state !== 'play') setState('play');
+        if (now - S.lastCatch > 1200 && Math.random() < dt*2.2) {
+          S.lastCatch = now;
+          if (Math.random() < 0.5) { S.happy = Math.min(100, S.happy + 8); say('catch'); fx(S.toyX, S.toyY - 12, '*squeak*'); hearts(1);
+            const a = rnd(0, Math.PI*2); m.vx = Math.cos(a)*W*0.6; m.vy = Math.sin(a)*W*0.25; m.next = now + 700; }
+          else { say('miss'); const a = rnd(0, Math.PI*2); m.vx = Math.cos(a)*W*0.6; m.vy = Math.sin(a)*W*0.25; m.next = now + 600; }
+        }
+      }
+    }
+
+    if (t === 'fish') {
+      if (!S.fishPlaced) { if (S.state !== 'sit') setState('sit', 1); if (Math.random() < dt*0.4) say('bored'); return; }
+      const d = dist(S.x, S.y - 6, S.toyX, S.toyY);
+      if (d > 36) { S.target = {x: S.toyX - 18*S.dir, y: clamp(S.toyY, floorTop(), floorY())}; step(dt, W*0.3); if (S.state !== 'walk') setState('walk'); }
+      else if (S.state !== 'eat') { setState('eat', 2.4); S.dir = S.toyX < S.x ? -1 : 1; say('eat', true); }
+      else if (now > S.until) {
+        S.fishPlaced = false; el.classList.remove('on'); S.energy = Math.min(100, S.energy + 22); S.happy = Math.min(100, S.happy + 10);
+        hearts(3); setState('happy', 1.6); hint.textContent = 'tap the floor to put down another fish.';
+      }
+    }
+
+    if (el.classList.contains('on')) { el.style.left = S.toyX+'px'; el.style.top = S.toyY+'px'; }
+  }
+
+  // ── input ─────────────────────────────────────────────────
+  const pos = e => { const r = room.getBoundingClientRect(); return {x: clamp(e.clientX - r.left, 0, W), y: clamp(e.clientY - r.top, 0, H)}; };
+  let dragStart = null;
+  room.addEventListener('pointermove', e => { S.pointer = pos(e); });
+  room.addEventListener('pointerleave', () => { if (S.toy !== 'feather') S.pointer = null; });
+  room.addEventListener('pointerdown', e => {
+    const p = pos(e); S.pointer = p; dragStart = {...p, t: performance.now()};
+    if (e.target === catEl || catEl.contains(e.target)) return;
+    if (!S.playing || !S.toy) return;
+    if (S.toy === 'fish' && !S.fishPlaced) { S.toyX = p.x; S.toyY = clamp(p.y, floorTop(), floorY()); S.fishPlaced = true; toyEls.fish.classList.add('on'); say('!!', true); hint.textContent = 'here he comes.'; }
+    if (S.toy === 'mouse') { const a = Math.atan2(S.toyY - p.y, S.toyX - p.x); S.mouse.vx = Math.cos(a)*W*0.6; S.mouse.vy = Math.sin(a)*W*0.25; S.mouse.next = performance.now() + 600; fx(p.x, p.y, '*tap*'); }
+  });
+  room.addEventListener('pointerup', e => {
+    const p = pos(e);
+    if (S.playing && S.toy === 'yarn' && dragStart) {
+      const dt = Math.max(0.08, (performance.now() - dragStart.t)/1000);
+      let vx = (p.x - dragStart.x)/dt, vy = (p.y - dragStart.y)/dt;
+      if (Math.hypot(vx, vy) < 40) { // a tap: toss from where the yarn is toward the tap
+        const a = Math.atan2(p.y - S.toyY, p.x - S.toyX), d = dist(p.x, p.y, S.toyX, S.toyY);
+        vx = Math.cos(a)*Math.min(W*0.9, d*2.4); vy = Math.sin(a)*Math.min(W*0.9, d*2.4);
+      } else { S.toyX = dragStart.x; S.toyY = clamp(dragStart.y, floorTop(), floorY()); }
+      S.toyVX = clamp(vx, -W, W); S.toyVY = clamp(vy, -W*0.5, W*0.5);
+      fx(S.toyX, S.toyY - 14, '~'); if (Math.random()<.5) say(pick(['!!', 'mine', 'yarn!!']), true);
+    }
+    dragStart = null;
+  });
+  catEl.addEventListener('pointerdown', e => {
+    e.stopPropagation();
+    if (S.state === 'sleep') { say(pick(['zzz', '...five more minutes', 'mrrp. no.']), true); return; }
+    if (!S.playing) { say('hi', true); startPlay(); hearts(1); setState('happy', 1.2); mood('peewee says hi'); }
+    else { say('pet', true); hearts(2); S.happy = Math.min(100, S.happy + 3); if (S.state !== 'walk') setState('happy', 1); }
+  });
+  document.querySelectorAll('.tbtn').forEach(b => b.addEventListener('click', () => selectToy(b.dataset.toy)));
+  $('#stopBtn').addEventListener('click', () => stopPlay(false));
+  addEventListener('keydown', e => { if (e.key === 'Escape' && S.playing) stopPlay(false); });
+
+  // ── go ─────────────────────────────────────────────────────
+  bars(); setState('sit', 2); say('...', true);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

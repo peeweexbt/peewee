@@ -59,6 +59,7 @@
   .pill{font-size:12.5px;display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1.5px dashed #cfc9bb;border-radius:4px;background:var(--card);color:var(--ink)}
   .dot{width:8px;height:8px;border-radius:50%;background:#7fc28f;box-shadow:0 0 0 3px rgba(127,194,143,.25)}
   .dot.napping{background:#c9c2b3;box-shadow:none}
+  .pill.play{border-color:var(--accent);color:var(--ink);text-decoration:none}.pill.play:hover{background:var(--accent);color:#fff}
   @media (prefers-reduced-motion: reduce){.head,.lid,.icon-row .sp{animation:none}}
 
   /* ── latest ─────────────────────────────── */
@@ -205,6 +206,7 @@
       <span class="pill"><i class="dot" id="dot"></i><span id="statusText">warming up the palette…</span></span>
       <span class="pill" id="countPill">0 paintings</span>
       <a class="pill" id="xlink" href="#" target="_blank" rel="noopener">follow on X</a>
+      <a class="pill play" href="play.html">play with peewee &rarr;</a>
     </div>
   </header>
 
