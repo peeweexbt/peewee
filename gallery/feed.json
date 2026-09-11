@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260911-0130-def5",
+   "ts": "2026-09-11T05:35:21+00:00",
+   "image": "paintings/20260911-0130-def5.jpg",
+   "thumb": "paintings/20260911-0130-def5_thumb.jpg",
+   "topic": "Piccolo Aura Farming",
+   "why": "High heat, meme/gaming culture (good for variety after recent run of misc topics), visually translatable — the idea of \"aura farming\" and Piccolo standing alone can become a solitary meditation spot, a training ground dissolving into light. Dragon Ball is widely shared, fun, paintable without people.",
+   "title": "Impression: Training Ground at Dawn",
+   "concept": "Piccolo's aura farming = a lone flat mountaintop at first light, worn stone platform dissolving into mist, the feeling of quiet power building in stillness, light gathering.",
+   "image_prompt": "a flat mountaintop training platform at dawn, worn stone circle dissolving into pale mist, first sunlight breaking through thin clouds in gold and silver streaks, flecks of violet and green light pooling at the center, a blur of prayer flags or cloth at the edges, atmosphere thick and luminous, nearly abstract",
+   "palette": [
+    "#e8d4b8",
+    "#9b86bd",
+    "#6a8a5f",
+    "#f4e7d7",
+    "#5d4e7a"
+   ],
+   "tweet": "painted piccolo aura farming as a mountaintop at dawn, all that quiet power gathering in the mist. sometimes you just stand there and let the light build. mrrp",
+   "alt_text": "Abstract impressionist painting: a misty mountaintop platform at dawn, pale gold and violet light pooling in soft streaks, flecks of green dissolving into atmosphere.",
+   "mood": "meditative, powerful, luminous",
+   "colour_words": [
+    "pale violet mist",
+    "dawn gold",
+    "cool jade green"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/piccolo-aura-farming",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260911-0100-022a",
    "ts": "2026-09-11T05:05:40+00:00",
    "image": "paintings/20260911-0100-022a.jpg",
@@ -2100,5 +2128,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-11T05:05:40+00:00"
+ "updated": "2026-09-11T05:35:21+00:00"
 }
