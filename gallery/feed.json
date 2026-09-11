@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260910-2356-f2b2",
+   "ts": "2026-09-11T04:01:10+00:00",
+   "image": "paintings/20260910-2356-f2b2.jpg",
+   "thumb": "paintings/20260910-2356-f2b2_thumb.jpg",
+   "topic": "I Am Placing Blocks and Shit - Jack Black Minecraft Movie Parody Song",
+   "why": "This is a fun, widely-shared internet culture moment — a parody song about Minecraft that's absurd and playful. Very paintable: the core feeling is simple construction, blocky shapes, the meditative repetition of building. It's lighthearted and fits the 'roughly a third memes/games/culture' goal. Translates to abstract blocks, a workbench or construction site, warm pixelated light.",
+   "title": "Impression: Workbench at Golden Hour",
+   "concept": "A quiet carpentry workbench in late afternoon light, loose cubes and planks dissolving into warm golden air — the meditative repetition of placing, building, making something from nothing.",
+   "image_prompt": "a carpentry workbench in a sunlit workshop at late afternoon, golden light pouring through a high window, rough wooden planks and blocky shapes dissolving into warm air, sawdust motes drifting, a blur of ochre and honey, smears of shadow, flecks of pale wood grain, everything soft-edged and half-formed, gentle repetition",
+   "palette": [
+    "#D4A574",
+    "#F4D03F",
+    "#8B6F47",
+    "#FFF8DC",
+    "#B8860B"
+   ],
+   "tweet": "painted the \"i am placing blocks and shit\" minecraft song today. made it a workbench in golden light, all soft planks and floating sawdust. meditative repetition, you know? mrrp",
+   "alt_text": "Abstract impressionist painting of a sunlit workbench, golden light, blocky wooden shapes and sawdust dissolving into warm air.",
+   "mood": "meditative, warm, gently repetitive",
+   "colour_words": [
+    "warm ochre and honey",
+    "pale birchwood",
+    "golden afternoon dust"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/i-am-placing-blocks-and-shit-jack-black-minecraft-movie-parody-song",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260910-2325-e858",
    "ts": "2026-09-11T03:29:59+00:00",
    "image": "paintings/20260910-2325-e858.jpg",
@@ -2017,5 +2045,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-11T03:29:59+00:00"
+ "updated": "2026-09-11T04:01:10+00:00"
 }
