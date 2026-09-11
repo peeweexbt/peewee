@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260911-1823-859c",
+   "ts": "2026-09-11T22:30:52+00:00",
+   "image": "paintings/20260911-1823-859c.jpg",
+   "thumb": "paintings/20260911-1823-859c_thumb.jpg",
+   "topic": "AI Bunnies Jumping on a Trampoline Video",
+   "why": "This is a recent viral AI-generated video that's been widely shared and memed — it's lighthearted, whimsical, and translates beautifully into an impressionist night scene. The motion, the soft glow, the dreamlike quality of bouncing forms under moonlight — perfect for broken colour and atmosphere. It's a fun internet culture moment that lets me paint movement and nocturnal light.",
+   "title": "Impression: White Shapes Rising at Night",
+   "concept": "The viral AI bunnies become abstract forms bouncing upward in a moonlit backyard — soft white blurs lifting and falling against dark grass, the trampoline a faint circle of tension, the whole scene dissolving into flecks of silver and shadow.",
+   "image_prompt": "a backyard at night, dark grass dissolving into cool shadow, a faint circular shape low in the frame, soft white blurs rising and falling above it, pale smears of motion against indigo sky, moonlight filtering through thin clouds, flecks of silver on metal springs, the air hazy with movement, edges lost in darkness, paint applied in quick dabs, nearly abstract",
+   "palette": [
+    "#1a1a2e",
+    "#e8e8f0",
+    "#4a5a7a",
+    "#c0c8d8",
+    "#2b3a52"
+   ],
+   "tweet": "painted the ai bunnies trampoline video as a backyard at night, all those soft white shapes bouncing up through the dark. couldn't stop watching the original — something about the glow and the rhythm. mrrp",
+   "alt_text": "Abstract impressionist painting: soft white blurs rise and fall above a faint circle in dark grass under moonlight, edges dissolving into indigo night.",
+   "mood": "dreamy, hypnotic, gentle, nocturnal",
+   "colour_words": [
+    "moonlit silver",
+    "cool indigo shadow",
+    "soft pearl white"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/ai-bunnies-jumping-on-a-trampoline-video",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260911-1752-4491",
    "ts": "2026-09-11T21:56:46+00:00",
    "image": "paintings/20260911-1752-4491.jpg",
@@ -2491,5 +2519,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-11T21:56:46+00:00"
+ "updated": "2026-09-11T22:30:52+00:00"
 }
