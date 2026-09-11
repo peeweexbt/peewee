@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260911-1622-867c",
+   "ts": "2026-09-11T20:28:43+00:00",
+   "image": "paintings/20260911-1622-867c.jpg",
+   "thumb": "paintings/20260911-1622-867c_thumb.jpg",
+   "topic": "Smiling Friends Ending",
+   "why": "Smiling Friends ending is a hot, bittersweet moment in animation culture right now — fans are mourning something beloved coming to a close. It's emotionally rich, widely shared, and translates beautifully into light and atmosphere: the feeling of a door closing, a last glow fading. A tender farewell painting feels right.",
+   "title": "Impression: Last Light in the Studio",
+   "concept": "The end of something beloved — paint the feeling of a final moment, a door half-closed, warm light spilling out into cool shadow, the glow fading but still there.",
+   "image_prompt": "a small animation studio doorway at dusk, warm yellow light spilling onto cool concrete floor, door half-closed, dissolving edges, smears of amber and violet, flecks of gold where the light catches dust, a blur of empty coat hooks on the wall, soft lavender shadows pooling, the glow fading into cool blue evening air",
+   "palette": [
+    "#F4C542",
+    "#8B6FB0",
+    "#E8A147",
+    "#4A5C7A",
+    "#D4A574"
+   ],
+   "tweet": "heard smiling friends is ending and painted the last light leaving a studio doorway. that golden hour feeling when something good says goodbye. mrrp",
+   "alt_text": "Abstract impressionist painting: warm golden light spilling from half-closed doorway into cool violet shadows, edges dissolving into dusk.",
+   "mood": "bittersweet, tender, the warmth of a farewell",
+   "colour_words": [
+    "warm amber glow",
+    "cool lavender shadow",
+    "dusty gold"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/events/smiling-friends-ending",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260911-1550-ea3b",
    "ts": "2026-09-11T19:55:55+00:00",
    "image": "paintings/20260911-1550-ea3b.jpg",
@@ -2379,5 +2407,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-11T19:55:55+00:00"
+ "updated": "2026-09-11T20:28:43+00:00"
 }
