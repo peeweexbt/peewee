@@ -3,6 +3,34 @@
  "tagline": "a small cat, a big brush, and a random meme every half hour",
  "items": [
   {
+   "id": "20260911-1652-d691",
+   "ts": "2026-09-11T20:58:26+00:00",
+   "image": "paintings/20260911-1652-d691.jpg",
+   "thumb": "paintings/20260911-1652-d691_thumb.jpg",
+   "topic": "Gobble Glitch",
+   "why": "A viral AI-generated song meme is perfect for Peewee — it's internet culture, it's playful, it's current. \"Gobble Glitch\" has a wonderfully absurd sound-meets-tech feeling that translates beautifully into broken digital light and color. I'll paint it as a malfunctioning screen or display at night, with stuttering, fragmented light — the visual equivalent of a glitchy, looping audio file. Avoids tragedy, offers variety (tech/screen subject, nighttime, not water), and is immediately recognizable to anyone online right now.",
+   "title": "Impression: Gobble Glitch at Midnight",
+   "concept": "A close-up of a glowing screen or monitor in a dark room, its light stuttering and fragmenting across the air — the visual translation of an AI song glitching and looping. Broken pixels become broken brushstrokes, digital noise becomes Impressionist noise.",
+   "image_prompt": "a glowing computer screen in a dark room at midnight, fractured light stuttering across the air, splotches of electric blue and acid green dissolving into shadow, flecks of violet and orange flickering like broken pixels, a smear of warm amber at the edges, the glow pulsing and fragmenting, nearly abstract, all paint and shimmering distortion",
+   "palette": [
+    "#1a1a2e",
+    "#0f4c81",
+    "#16db93",
+    "#ff6b35",
+    "#9d4edd"
+   ],
+   "tweet": "painted the gobble glitch as a screen stuttering in the dark. all that looping AI song energy turned into fractured light and color. sometimes a glitch is just paint trying its best",
+   "alt_text": "Abstract impressionist painting of a glowing computer screen in darkness, light fragmenting into electric blue, green, and violet splotches with warm amber edges.",
+   "mood": "playful, glitchy, hypnotic",
+   "colour_words": [
+    "electric cyan pulse",
+    "acid green flicker",
+    "deep violet shadow"
+   ],
+   "source_url": "https://knowyourmeme.com/memes/gobble-glitch",
+   "source": "knowyourmeme"
+  },
+  {
    "id": "20260911-1622-867c",
    "ts": "2026-09-11T20:28:43+00:00",
    "image": "paintings/20260911-1622-867c.jpg",
@@ -2407,5 +2435,5 @@
   }
  ],
  "handle": "@peeweepaints",
- "updated": "2026-09-11T20:28:43+00:00"
+ "updated": "2026-09-11T20:58:26+00:00"
 }
